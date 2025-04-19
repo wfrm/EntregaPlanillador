@@ -1,0 +1,23 @@
+.led-checkbox {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .led-checkbox input[type="checkbox"] {
+    display: none;
+  }
+
+  .led {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #c9c5c5; /* LED apagado */
+    box-shadow: 0 0 5px #999696;
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+
+  .led-checkbox input[type="checkbox"]:checked + .led {
+    background-color: #F5B041; /* LED encendido */
+    box-shadow: 0 0 3px #F5B041, 0 0 6px #F5B041;
+  }

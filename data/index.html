@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style2.css">
+    <link rel="stylesheet" media="screen" href="web-components/toggle-switch.css">
+    <link rel="stylesheet" href="toogle.css" />
+    <link rel="stylesheet" href="web-components/css/boton-puesto.css">
+    <link rel="stylesheet" href="w3.css">
+    <link rel="stylesheet" href="styleLed.css">
+
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script>
+        // Si jQuery no se ha cargado desde el CDN, cargar la versión local
+        window.jQuery || document.write('<script src="jquery-1.11.2.js"><\/script>');
+    </script>
+
+
+    <title>Gestión de Horarios</title>
+</head>
+<body>
+    <div class="w3-sidebar w3-bar-block w3-light-grey w3-card" style="width:190px">
+        <h5 class="w3-bar-item">Menu</h5>
+        <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Bogota')">Control manual</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'London')">Programacion rapida</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Paris')">Programacion personalizada</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Tokyo')">horario Semana</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Cali')">Guardar en Memoria</button>
+      </div>
+
+      <div class="container" style="margin-left:200px">
+        <div id="Bogota" class="w3-container city" style="display:block">
+            <h3>Control manual:</h3>
+            <!--
+            <button class="manual-btn" data-puesto="manual1">Puesto 1</button>
+            <button class="manual-btn" data-puesto="manual2">Puesto 2</button>
+            <button class="manual-btn" data-puesto="manual3">Puesto 3</button>
+            <button class="manual-btn" data-puesto="manual4">Puesto 4</button>
+            -->
+        <div class="botonera">
+            <div class="toggleWrapper manual-btn">
+                <input type="checkbox" id="dnGeneral" class="dnGeneral" data-puesto="manual1" >
+                <label for="dnGeneral" class="toggle"><span class="toggle__handler"></span></label>
+                <p style="margin-top: 5px;">Puesto 1</p>
+            </div>
+        
+            <div class="toggleWrapper manual-btn">
+                <input type="checkbox" id="dnGeneral2" class="dnGeneral" data-puesto="manual2" >
+                <label for="dnGeneral2" class="toggle"><span class="toggle__handler"></span></label>
+                <p style="margin-top: 5px;">Puesto 2</p>
+            </div>
+        
+            <div class="toggleWrapper manual-btn">
+                <input type="checkbox" id="dnGeneral3" class="dnGeneral" data-puesto="manual3" >
+                <label for="dnGeneral3" class="toggle"><span class="toggle__handler"></span></label>
+                <p style="margin-top: 5px;">Puesto 3</p>
+            </div>
+        
+            <div class="toggleWrapper manual-btn">
+                <input type="checkbox" id="dnGeneral4" class="dnGeneral" data-puesto="manual4" >
+                <label for="dnGeneral4" class="toggle"><span class="toggle__handler"></span></label>
+                <p style="margin-top: 5px;">Puesto 4</p>
+            </div>
+        </div>
+        </div>
+        <div id="London" class="w3-container city" style="display:none">
+            <h3>Selecciona los puestos:</h3>
+            <div class="puesto-container">
+                <label class="led-checkbox">
+                    <input type="checkbox" id="led1" class="indicadorLed" data-puesto="manual1">
+                    <span class="led"></span>
+                </label>
+                <button class="puesto-btn" data-puesto="puesto1">Puesto 1</button>
+            </div>
+            <div class="puesto-container">
+                <label class="led-checkbox">
+                    <input type="checkbox" id="led2" class="indicadorLed" data-puesto="manual2">
+                    <span class="led"></span>
+                </label>
+                <button class="puesto-btn" data-puesto="puesto2">Puesto 2</button>
+            </div>
+            <div class="puesto-container">
+                <label class="led-checkbox">
+                    <input type="checkbox" id="led3" class="indicadorLed" data-puesto="manual3">
+                    <span class="led"></span>
+                </label>
+                <button class="puesto-btn" data-puesto="puesto3">Puesto 3</button>
+            </div>
+            <div class="puesto-container">
+                <label class="led-checkbox">
+                    <input type="checkbox" id="led4" class="indicadorLed" data-puesto="manual4">
+                    <span class="led"></span>
+                </label>
+                <button class="puesto-btn" data-puesto="puesto4">Puesto 4</button>
+            </div>
+            
+                <h3>Selecciona los días:</h3>
+                <button class="dia-btn" data-dia="0">Domingo</button>
+                <button class="dia-btn" data-dia="1">Lunes</button>
+                <button class="dia-btn" data-dia="2">Martes</button>
+                <button class="dia-btn" data-dia="3">Miércoles</button>
+                <button class="dia-btn" data-dia="4">Jueves</button>
+                <button class="dia-btn" data-dia="5">Viernes</button>
+                <button class="dia-btn" data-dia="6">Sábado</button>
+
+                <h2>Editar Horarios</h2>
+                <table id="data-table">
+                    <thead>
+                        <tr>
+                            <th>Periodo</th>
+                            <th>Inicio</th>
+                            <th>Fin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+        </div>
+        <div id="Paris" class="w3-container city" style="display:none">
+            <h3>Selecciona Horario:</h3>
+            <label for="horaInicio">Hora de inicio:</label>
+            <input type="time" id="horaInicio">
+        
+            <label for="horaFin">Hora de fin:</label>
+            <input type="time" id="horaFin">
+        
+            <button id="guardarHorario">Guardar Horario</button>
+        
+        </div>
+        <div id="Tokyo" class="w3-container city" style="display:none">
+            <div id="day-schedule"></div>
+        </div>
+      </div>
+
+    <script src="index.js"></script>
+    <script>
+        (function ($) {
+          $("#day-schedule").dayScheduleSelector({
+            
+            days: [0,1, 2, 3,4, 5, 6],
+            //interval: 15,
+            startTime: '00:00',
+            endTime: '23:45'
+            
+          });
+          $("#day-schedule").on('selected.artsy.dayScheduleSelector', function (e, selected) {
+            console.log(selected);
+          })
+
+        })($);
+      </script>
+    <script>
+       // Patrón Observer: Sistema de eventos
+const EventBus = {
+    events: {},
+    
+    subscribe: function(eventName, callback) {
+        if (!this.events[eventName]) {
+            this.events[eventName] = [];
+        }
+        this.events[eventName].push(callback);
+    },
+    
+    publish: function(eventName, data) {
+        if (!this.events[eventName]) {
+            return;
+        }
+        this.events[eventName].forEach(callback => {
+            callback(data);
+        });
+    }
+};
+
+// Modelo de datos central
+const HorarioModel = {
+    // Datos
+    jsonCommands4Puestos: {
+        "puesto1": { "0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": [] },
+        "puesto2": { "0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": [] },
+        "puesto3": { "0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": [] },
+        "puesto4": { "0": [], "1": [], "2": [], "3": [], "4": [], "5": [], "6": [] }
+    },
+    
+    periodosPreconfigurados: {
+        Dia: { inicio: "07:00", fin: "14:45" ,icono:"dia.png"},
+        Noche: { inicio: "16:00", fin: "21:45" ,icono:"noche.png"},
+        Madrugada: { inicio: "02:00", fin: "07:45" ,icono:"madrugada.png"},
+        FinSemana: { inicio: "07:00", fin: "13:45" ,icono:"finSemana.png"},
+        Ordinario: { inicio: "07:00", fin: "14:45" ,icono:"ordinario.png"},
+        todoTiempo: { inicio: "00:00", fin: "23:45" ,icono:"247.jpg" },
+        Festivo: { inicio: "07:00", fin: "13:45" ,icono:"festivo.jpg"},
+        Intermitencia: { encendido: "00:01", apagado: "00:01" ,icono:"intermitencia.png"}
+    },
+    controlManual:{
+        "manual1":"",
+        "manual2":"",
+        "manual3":"",
+        "manual4":""
+    } ,
+    
+    puestosSeleccionados: new Set(),
+    diasSeleccionados: new Set(),
+    estadoManual: new Set(),
+
+    activarControlManual:function(puesto){
+        this.estadoManual.add(puesto);
+        this.controlManual[puesto] = "ON";
+        EventBus.publish('manualActualizados', Array.from(this.estadoManual));
+        //EventBus.publish('horariosActualizados', this.controlManual);
+    },
+    desactivarControlManual:function(puesto){
+        this.estadoManual.delete(puesto);
+        this.controlManual[puesto] = "OFF";
+        EventBus.publish('manualActualizados', Array.from(this.estadoManual));
+        //EventBus.publish('horariosActualizados', this.controlManual);
+    },
+    
+    // Métodos para manipular datos
+    agregarPuesto: function(puesto) {
+        this.puestosSeleccionados.add(puesto);
+        EventBus.publish('puestosActualizados', Array.from(this.puestosSeleccionados));
+    },
+    
+    quitarPuesto: function(puesto) {
+        this.puestosSeleccionados.delete(puesto);
+        EventBus.publish('puestosActualizados', Array.from(this.puestosSeleccionados));
+    },
+    
+    agregarDia: function(dia) {
+        this.diasSeleccionados.add(dia);
+        EventBus.publish('diasActualizados', Array.from(this.diasSeleccionados));
+    },
+    
+    quitarDia: function(dia) {
+        this.diasSeleccionados.delete(dia);
+        EventBus.publish('diasActualizados', Array.from(this.diasSeleccionados));
+    },
+    
+    limpiarDias: function() {
+        this.diasSeleccionados.clear();
+        EventBus.publish('diasActualizados', Array.from(this.diasSeleccionados));
+    },
+    
+    seleccionarDiasOrdinarios: function() {
+        this.limpiarDias();
+        for (let i = 1; i <= 5; i++) {
+            this.agregarDia(i.toString());
+        }
+    },
+    
+    seleccionarFinDeSemana: function() {
+        this.limpiarDias();
+        this.agregarDia("0");
+        this.agregarDia("6");
+    },
+    
+    seleccionarTodaLaSemana: function() {
+        this.limpiarDias();
+        for (let i = 0; i <= 6; i++) {
+            this.agregarDia(i.toString());
+        }
+    },
+    timeToMinutes:function(time) {
+    const [hh, mm] = time.split(":").map(Number);
+    return hh * 60 + mm;
+}
+    ,
+    guardarHorario: function(horaInicio, horaFin) {
+        if (this.puestosSeleccionados.size === 0 || this.diasSeleccionados.size === 0) {
+            return false;
+        }
+        
+        const horario = [horaInicio, horaFin];
+        let nuevoArray=horario;
+        const horaInicioNueva =this.timeToMinutes(nuevoArray[0]);
+        const horaFinNueva = this.timeToMinutes(nuevoArray[1]);
+ 
+        this.puestosSeleccionados.forEach(puesto => {
+            this.diasSeleccionados.forEach(dia => {
+                //this.jsonCommands4Puestos[puesto][dia].unshift(horario);
+                this.jsonCommands4Puestos[puesto][dia]=[horario];
+            });
+        });
+
+
+        let data=this.jsonCommands4Puestos;
+
+
+        for (const puesto in data) {
+        for (const key in data[puesto]) {
+            const arrays = data[puesto][key];
+
+            for (let i = 0; i < arrays.length; i++) {
+                const [horaInicio, horaFin] = arrays[i].map(timeToMinutes);
+
+                if (horaInicio < horaInicioNueva && horaFin > horaFinNueva) {
+                    // Reemplazamos el array que cumple la condición
+                    data[puesto][key][i] = nuevoArray;
+                    return; // Salimos después de reemplazar
+                }
+            }
+        }
+    }
+    this.jsonCommands4Puestos=data;
+        
+        EventBus.publish('horariosActualizados', this.jsonCommands4Puestos);
+        return true;
+    },
+    
+    actualizarPeriodo: function(periodo, tipo, valor) {
+        if (tipo === 'inicio' || tipo === 'encendido') {
+            this.periodosPreconfigurados[periodo].inicio = valor;
+            this.periodosPreconfigurados[periodo].encendido = valor;
+        } else {
+            this.periodosPreconfigurados[periodo].fin = valor;
+            this.periodosPreconfigurados[periodo].apagado = valor;
+        }
+        
+        EventBus.publish('periodosActualizados', this.periodosPreconfigurados);
+    },
+    
+    aplicarPeriodo: function(periodo) {
+        if (this.puestosSeleccionados.size === 0 || this.diasSeleccionados.size === 0) {
+            return false;
+        }
+        
+        const configuracion = this.periodosPreconfigurados[periodo];
+        const horario = [configuracion.inicio || configuracion.encendido, configuracion.fin || configuracion.apagado];
+        
+
+        let nuevoArray=horario;
+        const horaInicioNueva = this.timeToMinutes(nuevoArray[0]);
+        const horaFinNueva = this.timeToMinutes(nuevoArray[1]);
+
+        this.puestosSeleccionados.forEach(puesto => {
+            this.diasSeleccionados.forEach(dia => {
+                //this.jsonCommands4Puestos[puesto][dia].unshift(horario);
+                this.jsonCommands4Puestos[puesto][dia]=[horario];
+            });
+        });
+
+
+
+        ////////////////////////////codigo repetido
+        let data=this.jsonCommands4Puestos;
+        for (const puesto in data) {
+        for (const key in data[puesto]) {
+            const arrays = data[puesto][key];
+
+            for (let i = 0; i < arrays.length; i++) {
+                const [horaInicio, horaFin] = arrays[i].map(this.timeToMinutes);
+
+                if (horaInicio <= horaInicioNueva && horaFin >= horaFinNueva) {
+                    // Reemplazamos el array que cumple la condición
+                    data[puesto][key][i] = nuevoArray;
+                    //return; // Salimos después de reemplazar
+                }
+            }
+        }
+    }
+    this.jsonCommands4Puestos=data;
+    // todo: hay que eliminar los repetidos. es decir dejar solo un horario
+
+
+
+
+
+        ////////////////////////////
+        
+        EventBus.publish('horariosActualizados', this.jsonCommands4Puestos);
+        return true;
+    }
+};
+
+
+const SyncStatusView = {
+    init: function() {
+        // Crear un elemento para mostrar el estado de sincronización
+        const statusElement = document.createElement('div');
+        statusElement.id = 'sync-status';
+        statusElement.className = 'sync-status';
+        document.body.appendChild(statusElement);
+        
+        // Suscribirse a eventos de sincronización
+        EventBus.subscribe('sincronizacionExitosa', this.mostrarExito);
+        EventBus.subscribe('sincronizacionFallida', this.mostrarError);
+        EventBus.subscribe('horariosActualizados', this.mostrarSincronizando);
+    },
+    
+    mostrarSincronizando: function() {
+        const statusElement = document.getElementById('sync-status');
+        if (statusElement) {
+            statusElement.textContent = 'Sincronizando...';
+            statusElement.className = 'sync-status syncing';
+            // Ocultar después de un tiempo
+            setTimeout(() => {
+                statusElement.style.opacity = '0';
+            }, 3000);
+        }
+    },
+    
+    mostrarExito: function(data) {
+        const statusElement = document.getElementById('sync-status');
+        if (statusElement) {
+            statusElement.textContent = 'Datos sincronizados correctamente';
+            statusElement.className = 'sync-status success';
+            // Ocultar después de un tiempo
+            setTimeout(() => {
+                statusElement.style.opacity = '0';
+            }, 3000);
+        }
+    },
+    
+    mostrarError: function(error) {
+        const statusElement = document.getElementById('sync-status');
+        if (statusElement) {
+            statusElement.textContent = 'Error: ' + error;
+            statusElement.className = 'sync-status error';
+            // No ocultar automáticamente en caso de error para que el usuario lo vea
+        }
+    }
+};
+
+// Controladores para la UI
+const PuestoController = {
+    init: function() {
+        document.querySelectorAll('.puesto-btn').forEach(boton => {
+            boton.addEventListener('click', this.handlePuestoClick);
+        });
+
+        document.querySelectorAll('.manual-btn').forEach(boton => {
+            boton.addEventListener('click', this.manualPuestoClick);
+        });
+        
+        EventBus.subscribe('puestosActualizados', this.actualizarVistaSeleccion);
+        EventBus.subscribe('horariosActualizados', this.actualizarVisualizacion);
+        EventBus.subscribe('manualActualizados', this.actualizarVisualManual);
+        EventBus.subscribe('manualActualizados', this.actualizarVisualManualToggle);
+        EventBus.subscribe('manualActualizados', this.actualizarVisualManualLedCheckbox);
+        //
+    },
+
+    manualPuestoClick: function(event) {
+        const puesto = event.target.dataset.puesto;
+        
+//console.log(`control manual puesto ${puesto}`);
+//console.log(`estado de los puestos ${JSON.stringify(HorarioModel.controlManual)}`);
+        if (HorarioModel.estadoManual.has(puesto)) { //diferenciar de estado manual de control manual
+            HorarioModel.desactivarControlManual(puesto);
+        } else {
+            HorarioModel.activarControlManual(puesto);
+        }
+        EventBus.publish('manualPuestoActualizado', HorarioModel.controlManual);
+    },
+    
+    handlePuestoClick: function(event) {
+        const puesto = event.target.dataset.puesto;
+        
+        if (HorarioModel.puestosSeleccionados.has(puesto)) {
+            HorarioModel.quitarPuesto(puesto);
+        } else {
+            HorarioModel.agregarPuesto(puesto);
+        }
+    },
+    
+    actualizarVistaSeleccion: function(puestos) {
+        document.querySelectorAll('.puesto-btn').forEach(boton => {
+            const puesto = boton.dataset.puesto;
+            if (puestos.includes(puesto)) {
+                boton.style.backgroundColor = "#F5B041";
+            } else {
+                boton.style.backgroundColor = "";
+            }
+        });
+    },
+    
+    actualizarVisualizacion: function(jsonData) {
+        let validador= "manual1" in jsonData;
+        if (!validador){
+        $("#day-schedule").data('artsy.dayScheduleSelector').clearAll();
+        
+        HorarioModel.puestosSeleccionados.forEach(puesto => {
+            $("#day-schedule").data('artsy.dayScheduleSelector').deserialize(jsonData[puesto]);
+        });
+    }
+    },
+    actualizarVisualManual:function(data){
+        //console.log("actualizarVisualManual",data);
+        const soloManualBtn = Array.from(document.querySelectorAll('.manual-btn'))
+        .filter(el => el.classList.length === 1);
+
+        soloManualBtn.forEach(boton => {
+            const puesto = boton.dataset.puesto;
+            if (data.includes(puesto)) {
+                boton.style.backgroundColor = "#F5B041";
+            } else {
+                boton.style.backgroundColor = "";
+            }
+        });
+
+    },
+    actualizarVisualManualToggle:function(data){
+        //console.log("actualizarVisualManual",data);
+        const checkboxesConPuesto = document.querySelectorAll('input[type="checkbox"][data-puesto]');
+        checkboxesConPuesto.forEach(boton => {
+            const puesto = boton.dataset.puesto;
+            if (data.includes(puesto)) {
+                //boton.style.backgroundColor = "lightgreen";
+                boton.checked=true
+            } else {
+                //boton.style.backgroundColor = "";
+                boton.checked=false;
+            }
+        });
+
+    },
+    actualizarVisualManualLedCheckbox:function(data){
+        //console.log("actualizarVisualManual",data);
+        const checkboxesConPuesto = document.querySelectorAll('input[type="checkbox"].indicadorLed');
+        checkboxesConPuesto.forEach(boton => {
+            const puesto = boton.dataset.puesto;
+            if (data.includes(puesto)) {
+                //boton.style.backgroundColor = "lightgreen";
+                boton.checked=true
+            } else {
+                //boton.style.backgroundColor = "";
+                boton.checked=false;
+            }
+        });
+
+    }
+
+};
+
+const DiaController = {
+    init: function() {
+        document.querySelectorAll('.dia-btn').forEach(boton => {
+            boton.addEventListener('click', this.handleDiaClick);
+        });
+        
+        EventBus.subscribe('diasActualizados', this.actualizarVistaSeleccion);
+    },
+    
+    handleDiaClick: function(event) {
+        const dia = event.target.dataset.dia;
+        
+        if (HorarioModel.diasSeleccionados.has(dia)) {
+            HorarioModel.quitarDia(dia);
+        } else {
+            HorarioModel.agregarDia(dia);
+        }
+    },
+    
+    actualizarVistaSeleccion: function(dias) {
+        document.querySelectorAll('.dia-btn').forEach(boton => {
+            const dia = boton.dataset.dia;
+            if (dias.includes(dia)) {
+                boton.style.backgroundColor = "#F5B041";
+            } else {
+                boton.style.backgroundColor = "";
+            }
+        });
+    }
+};
+
+const HorarioController = {
+    init: function() {
+        document.getElementById('guardarHorario').addEventListener('click', this.handleGuardarClick);
+        
+        // EventBus.subscribe('horariosActualizados', function(data) {
+        //     console.log("JSON actualizado:", data);
+        // });
+    },
+    
+    handleGuardarClick: function() {
+        const horaInicio = document.getElementById('horaInicio').value;
+        const horaFin = document.getElementById('horaFin').value;
+        
+        if (!horaInicio || !horaFin) {
+            alert("Selecciona ambas horas.");
+            return;
+        }
+        
+        const resultado = HorarioModel.guardarHorario(horaInicio, horaFin);
+        
+        if (!resultado) {
+            alert("Selecciona al menos un puesto y un día.");
+            return;
+        }
+        
+        alert("Horario guardado correctamente.");
+        
+        // Limpiar selección
+        HorarioModel.puestosSeleccionados.clear();
+        HorarioModel.diasSeleccionados.clear();
+        EventBus.publish('puestosActualizados', []);
+        EventBus.publish('diasActualizados', []);
+    }
+};
+
+const PeriodoController = {
+    selectedButton: null,
+    
+    init: function() {
+        this.createTable();
+        
+        EventBus.subscribe('periodosActualizados', this.actualizarTabla);
+    },
+    
+    createTable: function() {
+        const tbody = document.querySelector("#data-table tbody");
+        tbody.innerHTML = "";
+        
+        for (let key in HorarioModel.periodosPreconfigurados) {
+            let row = document.createElement("tr");
+            const periodo = HorarioModel.periodosPreconfigurados[key];
+            
+            row.innerHTML = `
+                <td> <button class="puesto-button" onclick="PeriodoController.handleButtonClick(this, '${key}')">
+                    <img src=${periodo.icono} alt="Icono" style="width: 72px; height: 72px;">
+                        <span class="button-text"></span>
+                     </button>
+                     <p style="margin-top: 5px;">${key}</p>
+                </td>
+                <td><input type="time" value="${periodo.inicio || periodo.encendido}" onchange="PeriodoController.updateData('${key}', 'inicio', this.value)"></td>
+                <td><input type="time" value="${periodo.fin || periodo.apagado}" onchange="PeriodoController.updateData('${key}', 'fin', this.value)"></td>
+            `;
+            tbody.appendChild(row);
+        }
+    },
+    
+    actualizarTabla: function(data) {
+        const tbody = document.querySelector("#data-table tbody");
+        tbody.innerHTML = "";
+        
+        for (let key in data) {
+            let row = document.createElement("tr");
+            const periodo = data[key];
+            //este codigo se repite todo: refactorizar
+            row.innerHTML = `
+
+                            <td> <button class="puesto-button" onclick="PeriodoController.handleButtonClick(this, '${key}')">
+                    <img src=${periodo.icono} alt="Icono" style="width: 72px; height: 72px;">
+                        <span class="button-text"></span>
+                     </button>
+                     <p style="margin-top: 5px;">${key}</p>
+                </td>
+                <td><input type="time" value="${periodo.inicio || periodo.encendido}" onchange="PeriodoController.updateData('${key}', 'inicio', this.value)"></td>
+                <td><input type="time" value="${periodo.fin || periodo.apagado}" onchange="PeriodoController.updateData('${key}', 'fin', this.value)"></td>
+            `;
+            tbody.appendChild(row);
+        }
+    },
+    
+    updateData: function(periodo, tipo, valor) {
+        HorarioModel.actualizarPeriodo(periodo, tipo, valor);
+    },
+    
+    handleButtonClick: function(button, periodo) {
+        $("#day-schedule").data('artsy.dayScheduleSelector').clearAll();
+        
+        // Gestionar la selección automática de días según el periodo
+        if (periodo === "Ordinario") {
+            HorarioModel.seleccionarDiasOrdinarios();
+        } else if (periodo === "FinSemana") {
+            HorarioModel.seleccionarFinDeSemana();
+        } else if (periodo === "todoTiempo" || periodo==="Dia" || periodo==="Noche") {
+            HorarioModel.seleccionarTodaLaSemana();
+        }
+        
+        if (HorarioModel.diasSeleccionados.size === 0) {
+            alert("Debe seleccionar al menos un día.");
+            return;
+        }
+        
+        if (HorarioModel.puestosSeleccionados.size === 0) {
+            alert("Debe seleccionar al menos un puesto.");
+            return;
+        }
+        
+        // Gestionar la selección del botón
+        if (this.selectedButton) {
+            this.selectedButton.classList.remove("selected");
+            this.selectedButton.style.backgroundColor = "";
+        }
+        this.selectedButton = button;
+        this.selectedButton.classList.add("selected");
+        this.selectedButton.style.backgroundColor = "#F5B041";
+        
+        // Aplicar el periodo
+        HorarioModel.aplicarPeriodo(periodo);
+    }
+};
+
+// Nuevo controlador para sincronización con el servidor
+const SyncController = {
+    apiUrlPOST: 'https://tu-api-endpoint.com/horarios', // Reemplaza con la URL real de tu API
+    apiUrlWS: 'http://192.168.1.111:81', 
+    ws: null,
+    horaEnSegundos:function(hora = "00:00:00") {
+    // Divide la hora en partes (horas y minutos)
+    const partes = hora.split(':');
+    const horas = parseInt(partes[0], 10);    // Convierte las horas a entero
+    const minutos = parseInt(partes[1], 10);  // Convierte los minutos a entero
+
+    // Calcula el total en segundos (sin segundos específicos)
+    return minutos * 60 + horas * 3600;
+},
+    procesarDatosHoraEnSegundos:function(datos) {//funciono
+    let resultado = {};
+
+    // Procesar las claves principales (1, 2, 3, 4, ...)
+    const datosConvertidos = Object.fromEntries(
+        Object.entries(datos).map(([clavePrincipal, subObjeto]) => [
+            clavePrincipal, // Mantener la clave principal
+            Object.fromEntries(
+                // Procesar las claves internas del subobjeto (0, 1, 2, ...)
+                Object.entries(subObjeto).map(([dia, intervalos]) => [
+                    dia,
+                    intervalos.map(intervalo => intervalo.map(this.horaEnSegundos))
+                ])
+            )
+        ])
+    );
+    resultado=JSON.stringify(datosConvertidos, null, 0);
+    return resultado;
+},
+    init: function() {
+        
+        this.ws = new WebSocket(this.apiUrlWS);
+        //this.ws=this.webSocket;
+        this.ws.onopen = function() {
+            console.log("Conectado al servidor WebSocket.");
+        };
+
+        this.ws.onmessage = function(event) {
+            console.log("Respuesta del servidor:", event.data);
+            try {
+                const data = JSON.parse(event.data);
+                //console.log("Respuesta del servidor:", data);
+                EventBus.publish('sincronizacionExitosa', data);
+            } catch (error) {
+                //console.warn("No se pudo parsear la respuesta del servidor como JSON:", event.data);
+                if (event.data.includes("estados")){
+                    let partes = event.data.split(",");
+                    partes.forEach((parte, index) => {
+                        if (parte.includes("manual")) {
+                            HorarioModel.controlManual[parte] = "ON";
+                            HorarioModel.activarControlManual(parte);//  esta creando un loop
+                        } 
+                        else{
+                            HorarioModel.controlManual[parte]="OFF"; 
+                            HorarioModel.desactivarControlManual(`manual${index}`); 
+                            //console.log(`desactivar control manual ${parte} con indice ${index}`); 
+                        }
+                    });
+                    //EventBus.publish('manualActualizados', partes);
+                }
+                EventBus.publish('sincronizacionExitosa', event.data); // Se envía como string en caso de error
+            }
+        };
+
+        this.ws.onerror = function(error) {
+            console.error("Error en el WebSocket:", error);
+            EventBus.publish('sincronizacionFallida', error.message);
+        };
+
+        this.ws.onclose = function() {
+            console.log("Conexión WebSocket cerrada.");
+        };
+
+
+        // Suscribirse al evento de actualización de horarios
+        EventBus.subscribe('horariosActualizados', this.sincronizarDatosWS.bind(this));
+        EventBus.subscribe('manualPuestoActualizado', this.sincronizarDatosWS.bind(this));
+       // EventBus.subscribe('horariosActualizados', this.sincronizarDatosPOST.bind(this));
+    },
+    sincronizarDatosWS:function(jsonData){
+        console.log("Sincronizando datos con el servidor a través de WebSocket...");
+
+        let datosEnSegundos=JSON.stringify(jsonData);
+        let datosParaEnviar=jsonData;
+    // Crear una copia de los datos para evitar modificar los originales
+    let selector="manual1" in jsonData;
+    if (!selector){
+        datosEnSegundos=this.procesarDatosHoraEnSegundos(jsonData);
+        datosParaEnviar = JSON.parse(JSON.stringify(datosEnSegundos));
+    }
+    
+
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        try {
+            this.ws.send(datosEnSegundos);
+            console.log("Datos enviados al servidor:", datosParaEnviar);
+        } catch (error) {
+            console.error("Error al enviar datos por WebSocket:", error);
+            EventBus.publish('sincronizacionFallida', error.message);
+        }
+    } else {
+        console.error("El WebSocket no está conectado.");
+        EventBus.publish('sincronizacionFallida', "El WebSocket no está conectado.");
+    }
+
+
+
+
+    },
+    sincronizarDatosPOST: function(jsonData) {
+        console.log("Sincronizando datos con el servidor...");
+        
+        // Crear una copia para evitar modificar los datos originales
+        const datosParaEnviar = JSON.parse(JSON.stringify(jsonData));
+        
+        // Enviar datos al servidor mediante fetch
+        fetch(this.apiUrlPOST, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datosParaEnviar)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Sincronización exitosa:', data);
+            // Si quieres notificar a la UI que la sincronización fue exitosa
+            EventBus.publish('sincronizacionExitosa', data);
+        })
+        .catch(error => {
+            console.error('Error al sincronizar con el servidor:', error);
+            // Si quieres notificar a la UI que hubo un error
+            EventBus.publish('sincronizacionFallida', error.message);
+        });
+    },
+    
+    // Método opcional para forzar la sincronización manualmente
+    forzarSincronizacion: function() {
+        this.sincronizarDatosPOST(HorarioModel.jsonCommands4Puestos);
+    }
+};
+
+
+// Inicialización
+document.addEventListener('DOMContentLoaded', function() {
+    SyncController.init(); // Inicializar el nuevo controlador
+    SyncStatusView.init();
+    PuestoController.init();
+    DiaController.init();
+    HorarioController.init();
+    PeriodoController.init();
+
+});
+    </script>
+<script><!-- codigo para los tab -->
+    function openCity(evt, cityName) {
+      var i, x, tablinks;
+      x = document.getElementsByClassName("city");
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablink");
+      for (i = 0; i < x.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace("  w3-light-grey", " ");
+      }
+      document.getElementById(cityName).style.display = "block";
+      evt.currentTarget.className += " .w3-orange";// por alguna razon se sobre escribe
+    }
+    </script>
+
+
+</body>
+</html>

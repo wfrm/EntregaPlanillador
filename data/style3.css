@@ -1,0 +1,119 @@
+.wraper
+{
+display:grid;
+grid-template-columns: 2fr 3fr;
+grid-column-gap:1em;
+}
+
+.wraper >div
+{
+border:#333 1px solid;
+}
+/*//////////////// grilla ///////////////*/
+.grilla
+{
+display:grid;
+ 
+}
+.grilla >div
+{
+border:#333 1px solid;
+
+}
+/*///////////////// botonera Dias, dispositivos /////////*/
+.dispositivo .button1 {
+  background-color: #3498DB;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  float: left;
+
+}
+
+.dispositivo .button1:hover {
+  background-color: #555;
+}
+.diaSemana .button1 {
+  background-color: #3498DB;
+  border: none;
+  color: white;
+  padding: 15px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  float: left;
+}
+
+.diaSemana .button1:hover {
+  background-color: #555;
+}
+
+
+/*//////////////////// botonera //////////////////////*/
+
+.botonera
+{
+display:grid;
+grid-auto-rows:60px;
+ 
+}
+.botonera >div
+{
+border:#333 1px solid;
+background-color: #3498DB;
+}
+.button {
+  background-color:#3498DB;
+  border: none;
+  color: white;
+  padding: 20px 32px;
+  text-align: center;
+  text-decoration: none;
+
+  font-size: 25px;
+  max-width: 100%;
+  max-height: 100%;
+  cursor: pointer;
+  width: 100%;
+}
+.active, .button:hover {
+  background-color: #555;
+}
+/*/////////////////// colapsible ////////////////*/
+.collapsible {
+  background-color: #3498DB;/*#777;*/
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+   max-height: 100%;
+}
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+.content {
+
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+
+}
+.btn
+{
+display:flex;
+vertical-align: middle;
+width: 100%;
+}

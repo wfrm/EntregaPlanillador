@@ -1,0 +1,30 @@
+{
+        "Dia": {
+            "inicio":"00:00",
+            "fin":"23:45"
+        },
+        "Noche": {
+            "inicio":"00:00",
+            "fin": "23:45"
+        },
+        "Madrugada": {
+            "inicio": "00:00",
+            "fin":"23:45"
+        },
+        "FinSemana": {
+            "inicio":"00:00",
+            "fin":"23:45"
+        },
+        "Ordinario": {
+            "inicio":"00:00",
+            "fin":"23:45"
+        },
+        "Festivo": {
+            "inicio":"00:00",
+            "fin": "23:45"
+        },
+        "Intermitencia": {
+            "encendido": "00:00",
+            "apagado":"00:00"
+        }
+    }

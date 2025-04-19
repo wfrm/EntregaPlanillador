@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>paso a paso</title>
+	<!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<!-- Include SmartWizard CSS -->
+    <link href="smart_wizard.min.css" rel="stylesheet" type="text/css" />
+	
+	<link rel="stylesheet" type="text/css" href="style4.css"><!-- botonera -->
+	
+    
+    <!-- Optional SmartWizard theme -->
+    <link href="smart_wizard_theme_circles.min.css" rel="stylesheet" type="text/css" />
+    <link href="smart_wizard_theme_arrows.min.css" rel="stylesheet" type="text/css" />
+    <link href="smart_wizard_theme_dots.min.css" rel="stylesheet" type="text/css" />
+	<style>
+td 
+{
+text-align: center;
+
+}
+	</style>
+</head>
+<body>
+	<div class="container">
+			<h1>Programacion Rapida</h1>
+			<hr>
+				<center>
+						<div class="dispositivo"> 
+							<div>seleccion dispositivo</div>
+							<button class="button1" onclick="seleccionDisp(this)" id="dispositivo1" tipo="prog">1</button>
+							<button class="button1" onclick="seleccionDisp(this)" id="dispositivo2" tipo="prog">2</button>
+							<button class="button1" onclick="seleccionDisp(this)" id="dispositivo3" tipo="prog">3</button>
+							<button class="button1" onclick="seleccionDisp(this)" id="dispositivo4" tipo="prog">4</button>
+							<button class="button1" onclick="seleccionDisp(this)" id="dispositivo5" tipo="prog">5</button>
+							<button class="button1" onclick="seleccionDisp(this)" id="dispositivo6" tipo="prog">6</button>
+							<button class="button1" onclick="seleccionDisp(this)" id="dispositivo7" tipo="prog">7</button>
+							<button class="button1" onclick="seleccionDisp(this)" id="dispositivo8" tipo="prog">8</button>
+							<button class="button1" onclick="seleccionDisp(this)" id="dispositivo9" tipo="prog">9</button>
+							<button class="button1" onclick="seleccionDisp(this)" id="dispositivo10" tipo="prog">10</button>
+							<button id="configuracion" onclick="dia(8)"><img src="registrar.jpg"></button>
+						</div>
+				</center>
+			<hr>
+
+			<table class="table">
+				<tr>
+					<td onclick="seleccionDisp(this);" tipo="rapido"><button id="dia" onclick="dia(1)"><img src="dia.png" ></button></td>
+					<td onclick="seleccionDisp(this);" tipo="rapido"><button id="noche" onclick="dia(2)"><img src="noche.png" ></button></td>
+					<td onclick="seleccionDisp(this);" tipo="rapido"><button id="madrugada" onclick="dia(3)"><img src="madrugada.png" ></button></td>
+					<td onclick="seleccionDisp(this);" tipo="rapido"><button id="finSemana" onclick="dia(4)"><img src="finSemana.png" ></button></td>
+					<td onclick="seleccionDisp(this);" tipo="rapido"><button id="ordinario" onclick="dia(5)"><img src="ordinario.png" ></button></td>
+					<td onclick="seleccionDisp(this);" tipo="rapido"><button id="festivo" onclick="dia(6)"><img src="festivo.jpg" ></button></td>
+					<td onclick="seleccionDisp(this);" tipo="rapido"><button id="configuracion" onclick="dia(7)"><img src="porUsuario.png" ></button></td>
+				</tr>
+				<tr>
+					<td>Dia</td>
+					<td>Noche</td>
+					<td>Madrugada</td>
+					<td>Fin Semana</td>
+					<td>Ordinal</td>
+					<td>Festivo</td>
+					<td>Configuracion</td>
+				</tr>
+			</table>
+			<hr>
+				<center>
+					<div class="dispositivo"> 
+						<div>seleccion dia</div>
+						<button class="button1" onclick="seleccionDisp(this)" id="dia0" tipo="dia" valor=0>Domingo</button>
+						<button class="button1" onclick="seleccionDisp(this)" id="dia1" tipo="dia" valor=1>Lunes</button>
+						<button class="button1" onclick="seleccionDisp(this)" id="dia2" tipo="dia" valor=2>Martes</button>
+						<button class="button1" onclick="seleccionDisp(this)" id="dia3" tipo="dia" valor=3>Miercoles</button>
+						<button class="button1" onclick="seleccionDisp(this)" id="dia4" tipo="dia" valor=4>Jueves</button>
+						<button class="button1" onclick="seleccionDisp(this)" id="dia5" tipo="dia" valor=5>Viernes</button>
+						<button class="button1" onclick="seleccionDisp(this)" id="dia6" tipo="dia" valor=6>Sabado</button>
+
+					</div>
+				</center>
+			<hr>
+	</div>
+    <!-- Include jQuery -->
+    <script src="jquery.min.js"></script>
+	<!-- Include bootstrap -->
+    <script src="bootstrap.js"></script>
+	<!-- Include SmartWizard JavaScript source -->
+    <script type="text/javascript" src="jquery.smartWizard.min.js"></script>
+	
+	
+	<script>
+	$('#smartwizard').smartWizard({
+		theme:"arrows",
+		transitionEfect:"fade", 
+		transitionSpeed: '800'
+	});
+	</script>
+	
+<script>
+///////////////////////////////// horarios predefinidos //////////////////////////////
+var horaInicioDia="07:30";
+var horaFinDia="18:30";
+
+var horaInicioNoche="17:00";
+var horaFinNoche="24:00";
+
+var horaInicioMadrugada1="22:00";
+var horaFinMadrugada1="24:00";
+
+var horaInicioMadrugada2="00:00";
+var horaFinMadrugada2="07:30";
+
+var horaInicioFinSemana="06:00";
+var horaFinFinSemana="12:00";
+
+var horaInicioOrdinario="07:30";
+var horaFinOrdinario="18:30";
+
+var horaInicioFestivo="06:00";
+var horaFinFestivo="12:00";
+
+var horaInicioUsuario1="00:00";
+var horaFinUsuario1="07:30";
+
+var horaInicioUsuario2="00:00";
+var horaFinUsuario2="07:30";
+
+var guardarHora=0;
+
+
+var diaOpcion=0;
+/////////////////////////////////////////////////////////////////////////////////////
+semana={}
+</script>
+<script>
+function tempAlert(msg,duration)// alerta auto close sin bootstrap
+{
+
+ var el = document.createElement("div");
+ el.style.padding = "50px 10px 20px 30px";
+ el.setAttribute("style","position:absolute;top:55%;left:10%;background-color:white;");//ajustar la atura seun ubucacion de los botones
+ el.innerHTML = msg;
+ setTimeout(function(){
+  el.parentNode.removeChild(el);
+ },duration);
+ document.body.appendChild(el);
+}
+
+
+
+
+function seleccionDisp(disp)
+{
+console.log(disp);
+
+
+if(disp.getAttribute("selecto")== 'si')
+{	
+	if(disp.getAttribute("tipo")== 'rapido')
+	disp.style.background = '#fff';
+	else
+	disp.style.background = '#3498DB';
+	disp.setAttribute("selecto", "no");
+}
+else
+{
+	disp.style.background = '#F5B041';
+	disp.setAttribute("selecto", "si");
+	if(disp.getAttribute("tipo")!= 'instantaneo')
+	{
+		
+		tempAlert("elegir un horario",600);
+	}
+	else
+	{
+		noti=document.getElementById("notificacion");
+		noti.innerHTML=("control manual dispositivo")
+	}
+}
+
+}
+</script>
+<script>
+function clasificar(p)
+{
+diaOpcion=p;
+//$("#day-schedule").data('artsy.dayScheduleSelector').clear();
+//diaSemana=$('.diaSemana:checked').val();//ya no habria checkbox
+seleccion=[];
+if(p==1)
+{
+	horaInicio=horaInicioDia;
+	horaFin=horaFinDia;
+}
+if(p==2)
+{
+
+	horaInicio=horaInicioNoche;
+	horaFin=horaFinNoche;
+}
+if(p==3)
+{
+	horaInicio= horaInicioMadrugada1;
+	horaFin="24:00";
+	seleccion.push([horaInicio,horaFin]);
+	horaInicio="00:00";
+	horaFin= horaFinMadrugada2;
+}
+if(p==4 )
+{
+	horaInicio=horaInicioFinSemana;
+	horaFin=horaFinFinSemana;
+}
+if(p==5 )
+{
+	horaInicio=horaInicioOrdinario;
+	horaFin=horaFinOrdinario;
+
+}
+if(p==6 )
+{
+	horaInicio=horaInicioFestivo;
+	horaFin=horaFinFestivo;
+
+}
+if(p==7 )
+{
+	horaInicio=horaInicioUsuario1;
+	horaFin=horaFinUsuario1;
+
+}
+if(p==8 )
+{
+	horaInicio=horaInicioUsuario2;
+	horaFin=horaFinUsuario2;
+
+}
+seleccion.push([horaInicio,horaFin]);
+console.log(seleccion);
+}
+
+
+
+
+function dia(tipo)
+{
+elegidos=[];
+botones=document.getElementsByClassName("button1");
+diasElegidos=[];
+for (r=0;r<botones.length;r++)
+{
+	
+	if(botones[r].getAttribute("selecto")=="si" && botones[r].getAttribute("tipo")=="prog")
+	{
+	//console.log(botones[r].innerText);
+		elegidos.push(botones[r].innerText);
+	}
+	if(botones[r].getAttribute("selecto")=="si" && botones[r].getAttribute("tipo")=="dia")
+	{
+	//console.log(botones[r].innerText);
+		diasElegidos.push(botones[r].getAttribute("valor"));
+	}
+}
+console.log(elegidos);
+console.log(diasElegidos);
+clasificar(tipo);
+
+}
+
+</script><!-- sellecion de programacion rapida -->
+	
+	
+<script type='text/javascript'>
+function colorChanger(el){
+    el.style.backgroundColor = '#007d00';
+}
+
+</script>	
+	
+</body>
+</html>

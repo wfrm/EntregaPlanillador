@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Toma inteligente</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="w3.css">
+<link rel="stylesheet" type="text/css" href="style4.css"><!-- botonera -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- boton toggle -->
+	<link rel="stylesheet" href="netliva_switch.css" />
+	<link rel="stylesheet" href="toogle.css" />
+<style>
+.tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+.tooltiptext:hover  {
+  visibility: visible;
+  }
+
+</style>
+<script>
+dispositivosSelectos=[];
+diasSelectos=[];
+// variables llamado de funciones al microcontrolador-->
+var base="http://"+location.host+"/";
+var url;
+var xhr = new XMLHttpRequest();
+var	DI;
+var	DF;
+var	NI;
+var	NF;
+var	MI;
+var	MF;
+var	FI;
+var	FF;
+var	OI;
+var	OF;
+var	FESI;
+var	FESF;
+var	ITERI;
+var	ITERF;
+var ctrlDisp=[];
+var programarDisp=false;
+var mm=0;
+var actualManual=false;
+var escan=false;
+atodos=false;
+var contadorScan=0;
+var stopScan;	
+var weekday = new Array(7);
+weekday[0] = "Domingo";
+weekday[1] = "Lunes";
+weekday[2] = "Martes";
+weekday[3] = "Miercoles";
+weekday[4] = "Jueves";
+weekday[5] = "viernes";
+weekday[6] = "Sabado";
+now = new Date();
+var ProgSemana=[];
+var tblPersonalizada=false;
+</script>
+
+
+<script>
+
+function load_(){
+if(atodos==false)
+{
+url = base+"estadoPin"; 
+  xhr.open("GET", url, true);
+  xhr.send();
+  console.log("consultar pines");
+  contadorScan=contadorScan+1;
+  //escan=true;
+  //<!-- if(contadorScan>5) -->
+  //<!-- escan=true; -->
+  //<!-- else -->
+  //<!-- escan=false; -->
+  
+}
+};
+</script>
+
+
+<script>
+window.onload = function() {
+//stopScan=setInterval(load_, 1500);//minimo valor para no chocar los mensajes
+escan=false;
+url = base+"leerConfig"; 
+  xhr.open("GET", url, true);
+  xhr.send();
+};
+</script>
+
+
+</head>
+
+<body>
+
+
+
+	
+
+<div class="w3-sidebar w3-bar-block w3-light-grey w3-card" style="width:190px">
+  <h5 class="w3-bar-item">Menu</h5>
+  <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Bogota')">Control manual</button>
+  <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'London')">Programacion rapida</button>
+  <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Paris')">Programacion personalizada</button>
+  <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Tokyo')">Configuracion</button>
+  <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Cali')">Guardar en Memoria</button>
+</div>
+<div style="margin-left:200px">
+
+
+	<div class="container">
+	
+		<div id="Bogota" class="w3-container city" style="display:block">
+			<hr>
+			<br>
+			<h2>Control Manual</h2>
+			<div>
+			controle individualmente cada toma corriente, si una toma corriente tiene una temporizacion programada se mantendra en funcionamiento
+			</div>
+			<hr>
+			<!--- boton general --->
+			<div class="toggleWrapper">
+				<input type="checkbox" id="dnGeneral" class="dnGeneral" onclick="apagarTodos(this)">
+				<label for="dnGeneral" class="toggle"><span class="toggle__handler"></span></label>
+			</div>
+			<!--- fin boton general -->
+			<div id="addtable"></div>
+			<br>
+			<hr>
+			<div id="confirmacion"></div>
+		</div>
+	
+	<div id="London" class="w3-container city" style="display:none">
+		<hr>
+		<br>
+		<h2>Programacion rapida</h2>
+			<div>
+			rapidamente temporice las toma corrientes con los horarios y dias preestablecidos en configuracion
+			</div>
+			<hr>
+		<center>
+			<div class="dispositivo"> 
+			<div>Seleccion Toma Corriente</div>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo1" tipo="prog" lugar="London">1</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo2" tipo="prog" lugar="London">2</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo3" tipo="prog" lugar="London">3</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo4" tipo="prog" lugar="London">4</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo5" tipo="prog" lugar="London">5</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo6" tipo="prog" lugar="London">6</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo7" tipo="prog" lugar="London">7</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo8" tipo="prog" lugar="London">8</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo9" tipo="prog" lugar="London">9</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo10" tipo="prog" lugar="London">10</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="todos" tipo="prog" lugar="London">Todas</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="ninguno" tipo="prog" lugar="London">Ninguno</button>
+		</div>
+		
+	</center>
+			<hr>
+	<center>
+		<!---
+		<div class="dispositivo"> 
+			<div>seleccion dia</div>
+			<button class="button1" onclick="seleccionDisp(this)" id="dia0" tipo="dia" valor=0>Domingo</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dia1" tipo="dia" valor=1>Lunes</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dia2" tipo="dia" valor=2>Martes</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dia3" tipo="dia" valor=3>Miercoles</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dia4" tipo="dia" valor=4>Jueves</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dia5" tipo="dia" valor=5>Viernes</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dia6" tipo="dia" valor=6>Sabado</button>
+
+		</div>
+		--->
+	</center>
+		
+		<center>
+			<table class="table">
+				<tr>
+					<td onclick="seleccionDisp(this);" tipo="rapido" selecto="no" draggable="true"><button id="dia" onclick="dia(1)"><img onmouseover="descripcion(this)" src="dia.png" ></button><span class="tooltiptext">dia</span></td>
+					<td onclick="seleccionDisp(this);" tipo="rapido" selecto="no" draggable="true"><button id="noche" onclick="dia(2)"><img onmouseover="descripcion(this)" src="noche.png" ></button><span class="tooltiptext">noche</span></td>
+					<td onclick="seleccionDisp(this);" tipo="rapido" selecto="no" draggable="true"><button id="madrugada" onclick="dia(3)"><img onmouseover="descripcion(this)" src="madrugada.png" ></button><span class="tooltiptext">madrugada</span></td>
+					<td onclick="seleccionDisp(this);" tipo="rapido" selecto="no" draggable="true"><button id="ordinario" onclick="dia(4)"><img onmouseover="descripcion(this)" src="ordinario.png" ></button><span class="tooltiptext">laboral</span></td>
+					<td onclick="seleccionDisp(this);" tipo="rapido" selecto="no" draggable="true"><button id="finSemana" onclick="dia(5)"><img onmouseover="descripcion(this)" src="finSemana.png" ></button><span class="tooltiptext">fin semana</span></td>
+					<td onclick="seleccionDisp(this);" tipo="rapido" selecto="no" draggable="true"><button id="itermitencia" onclick="dia(6)"><img onmouseover="descripcion(this)" src="intermitencia.png" ></button><span class="tooltiptext">intermitencia </span></td>
+					<td onclick="seleccionDisp(this);" tipo="rapido" selecto="no" draggable="true"><button id="247" onclick="dia(7)"><img onmouseover="descripcion(this)" src="247.jpg" ></button><span class="tooltiptext">a todo momento </span></td>
+					<!--<td onclick="seleccionDisp(this);" tipo="rapido"><button id="configuracion" onclick="dia(7)"><img src="porUsuario.png" ></button></td>-->
+				</tr>
+				<tr>
+					<td>Dia</td>
+					<td>Noche</td>
+					<td>Madrugada</td>
+					<td>Laboral</td>
+					<td>Fin Semana</td>
+					<td>Itermitencia</td>
+					<td>24/7</td>
+					<!--<td>Configuracion</td>-->
+				</tr>
+			</table>
+		</center>
+			<hr>
+			<div class="rapida"><div class="tbl_user_data"></div></div>
+			<hr>
+			<div id="confirmacionRapida"></div><div id="dispositivosSeleccionados"></div><div id="diasSeleccionados"></div>
+
+	</div>
+	<div id="Paris" class="w3-container city" style="display:none">
+		<hr>
+		<br>
+		<h2>Temporizacion personalizada </h2>
+			<div>
+			temporice las toma corrientes con los horarios y dias segun su necesidad
+			</div>
+			<hr>
+		<br>
+
+		
+		<center>
+			<div class="dispositivo"> 
+			<div>Seleccion Toma Corriente</div>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo1" tipo="prog" lugar="Paris">1</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo2" tipo="prog" lugar="Paris">2</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo3" tipo="prog" lugar="Paris">3</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo4" tipo="prog" lugar="Paris">4</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo5" tipo="prog" lugar="Paris">5</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo6" tipo="prog" lugar="Paris">6</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo7" tipo="prog" lugar="Paris">7</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo8" tipo="prog" lugar="Paris">8</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo9" tipo="prog" lugar="Paris">9</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dispositivo10" tipo="prog" lugar="Paris">10</button>
+			<!--
+			<button class="button1" onclick="seleccionDisp(this)" id="todos" tipo="prog">Todas</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="ninguno" tipo="prog">Ninguno</button>
+			-->
+			
+		</div>
+		
+	<hr>
+	<center>
+		
+		<div class="dispositivo"> 
+			<div>seleccion dia</div>
+			<button class="button1" onclick="seleccionDisp(this)" id="dia0" tipo="dia" valor="0">Domingo</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dia1" tipo="dia" valor="1">Lunes</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dia2" tipo="dia" valor="2">Martes</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dia3" tipo="dia" valor="3">Miercoles</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dia4" tipo="dia" valor="4">Jueves</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dia5" tipo="dia" valor="5">Viernes</button>
+			<button class="button1" onclick="seleccionDisp(this)" id="dia6" tipo="dia" valor="6">Sabado</button>
+
+		</div>
+
+	</center>
+		
+	</center>
+
+		<hr>
+		<div class="contenedor">
+			<div class="dispositivo">
+				<button class="button1" onclick="dia(8)" id="agregar" tipo="agregar">agregar</button>
+				<div class="button1">
+				
+				<label for="appt1">Elija la hora de encendido:</label>
+
+				<input type="time" id="appt1" name="appt1"
+				min="09:00" max="18:00" required>
+				<br>
+				<label for="appt2">Elija la hora de apagado:&nbsp;&nbsp;&nbsp;</label>
+
+				<input type="time" id="appt2" name="appt2"
+				min="09:00" max="18:00" required>	
+				
+			</div>	
+
+				
+			</div>
+
+			
+		</div> 
+			<div class="personalizada"><div class="tbl_user_data"></div></div>
+			<hr>
+			<div id="confirmacionRapida"></div><div id="dispositivosSeleccionados"></div><div id="diasSeleccionados"></div>
+				
+	</div>
+	<div id="Tokyo" class="w3-container city" style="display:none">
+	<hr>
+	<br>
+	<h2>Configuracion</h2>
+		<div>
+			indique las horas de inicio y final para cada temporizacion que seran usadas en la programacion rapida
+			</div>
+			<hr>
+		<table class="table" id="tablaTemporizacion">
+			<thead>
+			<tr>
+				<th>tipo</th>
+				<th>inicio</th>
+				<th>fin</th>
+			</tr>
+			</thead>
+			<tbody>
+				<tr> <th>Dia:</th> <td><input type="time" id="DI" oninput="handleValueChange(this)" value="1" min="0=:00" max="23:59" required></td>  <td><input type="time" id="DF" value="2" oninput="handleValueChange(this)" min="0=:00" max="23:59" required></td></tr>
+				<tr> <th>Noche:</th> <td><input type="time" id="NI" value="3" oninput="handleValueChange(this)" min="0=:00" max="23:59" required></td>  <td><input type="time" id="NF" value="4" oninput="handleValueChange(this)" min="0=:00" max="23:59" required></td></tr>
+				<tr> <th>Madrugada:</th> <td><input type="time" id="MI" value="5" oninput="handleValueChange(this)" min="0=:00" max="23:59" required></td>  <td><input type="time" id="MF" value="6" oninput="handleValueChange(this)" min="0=:00" max="23:59" required></td></tr>
+				<tr> <th>Fin Semana:</th> <td><input type="time" id="FI" value="7" oninput="handleValueChange(this)" min="0=:00" max="23:59" required></td>  <td><input type="time"  id="FF" value="8" oninput="handleValueChange(this)" min="0=:00" max="23:59" required></td></tr>
+				<tr> <th>Ordinario:</th> <td><input type="time" id="OI" value="9" oninput="handleValueChange(this)" min="0=:00" max="23:59" required></td>  <td><input type="time" id="OF" value="10" oninput="handleValueChange(this)" min="0=:00" max="23:59" required></td></tr>
+				<tr> <th>Festivo:</th> <td><input type="time"  id="FESI" value="11" oninput="handleValueChange(this)" min="0=:00" max="23:59" required></td>  <td><input type="time"  id="FESF" value="12" oninput="handleValueChange(this)" min="0=:00" max="23:59" required></td></tr>
+				<tr> <th>Itermitancia:</th> <th>Tiempo encendido</th>  <th>Tiempo apagado</th>
+				<tr> <th>Itermitancia:</th> <td><input type="time" id="ITERI" value="13" oninput="handleValueChange(this)" min="0=:00" max="23:59" required></td>  <td><input type="time" id="ITERF" value="14" oninput="handleValueChange(this)" min="0=:00" max="23:59" required></td></tr>
+			</tbody>
+		</table>
+		<button id="configuracion" onclick="formatear()"><img src="registrar.jpg"></button>
+		<button id="reset" onclick="resetear()">restaurar configuracion</button>
+		<button id="stop" onclick="stopescaner()">parar/iniciar scaner</button>
+		<hr>
+		<div id="temporizacion"></div>
+	</div>
+    <div id="Cali" class="w3-container city" style="display:none">
+		<h2>validar si la informacion para programar un toma corriente esta completa</h2>
+	</div>
+
+
+
+</div>
+</div>
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>-->
+<!-- <script src="bootstrap.js"></script> -->
+<script>
+function descripcion(w)
+{
+a=w.closest("td")
+console.log(w.closest("td"));
+a.children[1].style["visibility"]="visible";
+//$( ".tooltiptext" ).css( "visibility", "visible" );
+w.onmouseout = function(){a=w.closest("td");a.children[1].style["visibility"]="hidden";};// funciona pero debe usarse una mejor forma
+}
+</script>
+
+
+<script>
+document.getElementById("configuracion").innerHTML="hola";
+</script>
+<script>
+function apagarTodos(b)
+{
+	escan=false;
+	atodos=true;
+	document.getElementById(1).checked = b.checked;
+	document.getElementById(2).checked = b.checked;
+	document.getElementById(3).checked = b.checked;
+	document.getElementById(4).checked = b.checked;
+	document.getElementById(5).checked = b.checked;
+	document.getElementById(6).checked = b.checked;
+	document.getElementById(7).checked = b.checked;
+	document.getElementById(8).checked = b.checked;
+	document.getElementById(9).checked = b.checked;
+	document.getElementById(10).checked = b.checked;
+	document.getElementById("confirmacion").innerHTML="esperando respuesta..."
+	url = base+"todos?estado="+b.checked;
+    xhr.open("GET", url, true);
+	xhr.send();
+}
+</script>
+<script>
+function handleValueChange1(e)
+{
+var DI;
+var DF;
+var NI;
+var NF;
+var MI;
+var MF;
+var FI;
+var FF;
+var OI;
+var OF;
+var FESI;
+var FESF;
+var ITERI;
+var ITERO;
+var jsonConfiguracion;
+  //var x = document.getElementById("DI").value;
+  
+  console.log(e.id)
+  if(e.id=="DI")
+  {
+  console.log( "inicio dia" + e.value);
+  DI=e.value;
+  }
+    if(e.id=="DF")
+	{
+  console.log( "final dia" + e.value);
+  DF=e.value;
+  }
+  
+    if(e.id=="NI")
+	{
+  console.log( "inicio noche" + e.value);
+  NI=e.value;
+  }
+    if(e.id=="NF")
+	{
+  console.log( "fin noche" + e.value);
+  NF=e.value;
+  }
+  
+      if(e.id=="MI")
+	  {
+  console.log( "inicio madrugada" + e.value);
+  MI=e.value;
+  }
+    if(e.id=="MF")
+	{
+  console.log( "fin madrugada" + e.value);
+  MF=e.value;
+  }
+  
+      if(e.id=="FI")
+	  {
+  console.log( "inicio fin semana" + e.value);
+  FI=e.value;
+  }
+    if(e.id=="FF")
+	{
+  console.log( "fin fin semana" + e.value);
+  FF=e.value;
+  }
+  
+  
+        if(e.id=="OI")
+		{
+  console.log( "inicio ordinal" + e.value);
+  OI=e.value;
+  }
+    if(e.id=="OF")
+	{
+  console.log( "fin ordinal" + e.value);
+  OF=e.value;
+  }
+  
+        if(e.id=="FESI")
+		{
+  console.log( "inicio festivo" + e.value);
+  FESI=e.value;
+  }
+    if(e.id=="FESF")
+	{
+  console.log( "fin festivo" + e.value);
+  FESF=e.value;
+  }
+  
+          if(e.id=="ITERI")
+		  {
+  console.log( "inicio itermitencia" + e.value);
+  ITERI=e.value;
+  }
+    if(e.id=="ITERO")
+	{
+  console.log( "fin itermitencia" + e.value);
+  ITERO=e.value;
+  }
+  
+  jsonConfiguracion='"dia":[["'+DI+'","'+DF+'"]],"noche":[['+NI+','+NF+']],"madrugada":[['+MI+','+MF+']],"finsemana":[['+FI+','+FF+']],"ordinario":[['+OI+','+OF+']],"festivo":[['+FESI+','+FESF+']],"itermitencia":[['+ITERI+','+ITERO+']]'
+  console.log(jsonConfiguracion);
+}
+</script>
+<!--
+<script>
+-->
+<script>
+function handleValueChange(e)
+{
+var DI;
+var DF;
+
+var NI;
+var NF;
+
+var MI;
+var MF;
+
+var FI;
+var FF;
+
+var OI;
+var OF;
+
+var FESI;
+var FESF;
+
+var ITERI;
+var ITERF;
+
+var jsonConfiguracion;
+  //var x = document.getElementById("DI").value;
+  
+  //console.log(e.id)
+  DI=document.getElementById("DI").value;
+  $("#DI")[0].attributes.value.value=DI;
+  DF=document.getElementById("DF").value;
+  $("#DF")[0].attributes.value.value=DF;
+  
+  NI=document.getElementById("NI").value;
+  $("#NI")[0].attributes.value.value=NI;
+  NF=document.getElementById("NF").value;
+  $("#NF")[0].attributes.value.value=NF;
+  
+MI=document.getElementById("MI").value;
+$("#MI")[0].attributes.value.value=MI;
+MF=document.getElementById("MF").value;
+$("#MF")[0].attributes.value.value=MF;
+  
+FI=document.getElementById("FI").value;
+$("#FI")[0].attributes.value.value=FI;
+FF=document.getElementById("FF").value;
+$("#FF")[0].attributes.value.value=FF;
+  
+  
+OI=document.getElementById("OI").value;
+$("#OI")[0].attributes.value.value=OI;
+OF=document.getElementById("OF").value;
+$("#OF")[0].attributes.value.value=OF;
+  
+
+FESI=document.getElementById("FESI").value;
+$("#FESI")[0].attributes.value.value=FESI;
+FESF=document.getElementById("FESF").value;
+$("#FESF")[0].attributes.value.value=FESF;
+  
+ITERI=document.getElementById("ITERI").value;
+$("#ITERI")[0].attributes.value.value=ITERI;
+ITERF=document.getElementById("ITERF").value;
+$("#ITERF")[0].attributes.value.value=ITERF;
+  
+  //jsonConfiguracion='"dia":[["'+DI+'","'+DF+'"]],"noche":[["'+NI+'","'+NF+'"]],"madrugada":[["'+MI+'","'+MF+'"]],"finsemana":[["'+FI+'","'+FF+'"]],"ordinario":[["'+OI+'","'+OF+'"]],"festivo":[["'+FESI+'","'+FESF+'"]],"itermitencia":[["'+ITERI+'","'+ITERF+'"]]'
+  jsonConfiguracion='DI'+DI+'/DI,';
+  jsonConfiguracion=jsonConfiguracion+'DF'+DF+'/DF,';
+  
+  jsonConfiguracion=jsonConfiguracion+'NI'+NI+'/NI,';
+  jsonConfiguracion=jsonConfiguracion+'NF'+NF+'/NF,';
+  
+  jsonConfiguracion=jsonConfiguracion+'MI'+MI+'/MI,';
+  jsonConfiguracion=jsonConfiguracion+'MF'+MF+'/MF,';
+  
+  jsonConfiguracion=jsonConfiguracion+'FI'+FI+'/FI,';
+  jsonConfiguracion=jsonConfiguracion+'FF'+FF+'/FF,';
+  
+  jsonConfiguracion=jsonConfiguracion+'OI'+OI+'/OI,';
+  jsonConfiguracion=jsonConfiguracion+'OF'+OF+'/OF,';
+  
+  jsonConfiguracion=jsonConfiguracion+'FESI'+FESI+'/FESI,';
+  jsonConfiguracion=jsonConfiguracion+'FESF'+FESF+'/FESF,'; 
+  
+  jsonConfiguracion=jsonConfiguracion+'ITERI'+ITERI+'/ITERI,';
+  jsonConfiguracion=jsonConfiguracion+'ITERF'+ITERF+'/ITERF,'; 
+
+  //console.log(jsonConfiguracion);
+  	//jsonactivador={'0':jsonDia[0],'1':jsonDia[1],'2':jsonDia[2],'3':jsonDia[3],'4':jsonDia[4],'5':jsonDia[5],'6':jsonDia[6]};
+	//resultado=JSON.stringify(jsonactivador);
+	url=base+"saveconfig?configuracion="+jsonConfiguracion;
+	//console.log(url);
+	xhr.open("GET", url, true);
+	xhr.send();
+}
+</script>
+<script><!-- codigo para los tab -->
+function openCity(evt, cityName) {
+document.getElementById("confirmacion").innerHTML="";
+  var i, x, tablinks;
+  x = document.getElementsByClassName("city");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace("  w3-light-grey", " ");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " .w3-orange";// por alguna razon se sobre escribe
+}
+</script>
+<script>
+function tempAlert(msg,duration)// alerta auto close sin bootstrap
+{
+
+ var el = document.createElement("div");
+ el.style.padding = "50px 10px 20px 30px";
+ el.setAttribute("style","position:absolute;top:55%;left:10%;background-color:white;");//ajustar la atura seun ubucacion de los botones
+ el.innerHTML = msg;
+ setTimeout(function(){
+  el.parentNode.removeChild(el);
+ },duration);
+ document.body.appendChild(el);
+}
+
+//version4
+function seleccionDisp(disp)
+{
+var origenCity;
+  x = document.getElementsByClassName("city");
+  for (i = 0; i < x.length; i++) {
+if(x[i].style.display!="none")
+{
+origenCity=x[i].id;
+console.log(`${x[i].id} ${x[i].style.display}` )
+
+}
+  }
+
+
+	$("[tipo=rapido]").each(function(index, value){
+
+	  this.style.background = '#fff';
+	  this.setAttribute("selecto", "no");
+	  
+	});
+
+if(disp.getAttribute("tipo")=="rapido")
+		{
+
+		disp.style.background = '#F5B041';
+		disp.setAttribute("selecto", "si");
+	
+	}
+
+	if(disp.getAttribute("tipo")=="prog")
+		{
+		console.log("tomacorriente");
+		if(disp.id=="todos")
+		{
+			$("[tipo=prog]").each(function(index, value)
+			{
+				if(disp.id!="ninguno" && this.id!="todos")
+				{
+					
+					if(value.parentElement.parentElement.parentElement.id==origenCity )
+					if(value.id!="ninguno" && value.id!="todos")
+					{
+						{
+						this.style.background = '#F5B041';
+						this.setAttribute("selecto", "si");
+						dispositivosSelectos.push(value.id);
+						}
+					}
+				}
+			});
+		}
+		if(disp.id=="ninguno")
+		{
+			$("[tipo=prog]").each(function(index, value)
+			{
+				this.style.background = '#3498DB';
+				this.setAttribute("selecto", "no");
+			});
+		}
+		if(disp.getAttribute("selecto")== 'si' )
+			{	
+				if(disp.getAttribute("tipo")== 'rapido')
+					disp.style.background = '#fff';
+				else
+					disp.style.background = '#3498DB';
+				disp.setAttribute("selecto", "no");
+				dispositivosSelectos.pop(disp.id);
+				var index = dispositivosSelectos.indexOf(disp.id);
+				if(index!=-1)
+				{
+					dispositivosSelectos.splice(index, 1);
+				}
+			}
+			else
+			{
+				disp.style.background = '#F5B041';
+				disp.setAttribute("selecto", "si");
+				//if(disp.id!='ninguno' && disp.id!='todos' )
+				if(disp.id!='ninguno')
+				dispositivosSelectos.push(disp.id);
+				else if (disp.id!='todos')
+				dispositivosSelectos=[];
+				
+				if(disp.getAttribute("tipo")!= 'instantaneo')
+				{
+			
+					tempAlert("elegir un horario",600);
+				}
+				else
+				{
+					noti=document.getElementById("notificacion");
+					noti.innerHTML=("control manual dispositivo")
+				}
+			}
+
+
+		}
+		if(disp.getAttribute("tipo")=="dia")
+		{
+			if(disp.getAttribute("selecto")== 'si')
+			{
+				if(disp.getAttribute("tipo")== 'rapido')
+					disp.style.background = '#fff';
+				else
+					disp.style.background = '#3498DB';
+				disp.setAttribute("selecto", "no");
+				var index = diasSelectos.indexOf(disp.attributes["valor"].value);
+				if(index!=-1)
+				{
+					diasSelectos.splice(index, 1);
+				}
+				
+				
+			}
+			else
+			{
+				disp.style.background = '#F5B041';
+				disp.setAttribute("selecto", "si");
+				//diasSelectos.pop(disp.attributes["valor"].value);
+				diasSelectos.push(disp.attributes["valor"].value);
+			}
+		}
+}	
+/*
+//version 3
+function seleccionDisp(disp)
+{
+
+	if(disp.getAttribute("tipo")=="prog")
+	{
+		if(disp.getAttribute("selecto")== 'si' )
+		{	
+			if(disp.getAttribute("tipo")== 'rapido')
+				disp.style.background = '#fff';
+			else
+				disp.style.background = '#3498DB';
+			disp.setAttribute("selecto", "no");
+			//dispositivosSelectos.pop(disp.id);
+			var index = dispositivosSelectos.indexOf(disp.id);
+			if(index!=-1)
+			{
+				dispositivosSelectos.splice(index, 1);
+			}
+		}
+		else
+		{
+			disp.style.background = '#F5B041';
+			disp.setAttribute("selecto", "si");
+			dispositivosSelectos.push(disp.id);
+			if(disp.getAttribute("tipo")!= 'instantaneo')
+			{
+		
+				tempAlert("elegir un horario",600);
+			}
+			else
+			{
+				noti=document.getElementById("notificacion");
+				noti.innerHTML=("control manual dispositivo")
+			}
+		}
+	}
+	if(disp.getAttribute("tipo")=="dia")
+	{
+		if(disp.getAttribute("selecto")== 'si')
+		{
+			if(disp.getAttribute("tipo")== 'rapido')
+				disp.style.background = '#fff';
+			else
+				disp.style.background = '#3498DB';
+			disp.setAttribute("selecto", "no");
+			var index = diasSelectos.indexOf(disp.attributes["valor"].value);
+			if(index!=-1)
+			{
+				diasSelectos.splice(index, 1);
+			}
+			
+			
+		}
+		else
+		{
+			disp.style.background = '#F5B041';
+			disp.setAttribute("selecto", "si");
+			//diasSelectos.pop(disp.attributes["valor"].value);
+			diasSelectos.push(disp.attributes["valor"].value);
+		}
+	}
+	if(disp.getAttribute("tipo")=="rapido")
+	{
+	console.log(disp.id);
+		if(disp.getAttribute("selecto")== 'si')
+		{
+			if(disp.getAttribute("tipo")== 'rapido')
+				disp.style.background = '#fff';
+			else
+				disp.style.background = '#3498DB';
+			disp.setAttribute("selecto", "no");
+			var index = diasSelectos.indexOf(disp.id);
+			if(index!=-1)
+			{
+				diasSelectos.splice(index, 1);
+			}
+		}
+		else
+		{
+			disp.style.background = '#F5B041';
+			disp.setAttribute("selecto", "si");
+			//diasSelectos.pop(disp.attributes["valor"].value);
+			diasSelectos.push(disp.id);
+		}
+	}
+
+
+
+//document.getElementById("dispositivosSeleccionados").innerHTML="<h2>"+h+"</h2>";
+console.log(dispositivosSelectos);
+console.log(diasSelectos);
+}
+*/
+</script>
+<script>
+
+
+    var c, r, t;
+	var DivTableContainer = document.createElement("center"); 
+    t = document.createElement('table');
+	r1 = t.insertRow(0); 
+	r2 = t.insertRow(0);
+<!--- creacion de botones --->
+
+
+
+for(i=0;i<10;i++)
+	{
+		var newDiv = document.createElement("div"); 
+		newDiv.className = "toggleWrapper";
+		var newInput = document.createElement("input");
+		newInput.type="checkbox";
+		newInput.id=(i+1);
+		newInput.setAttribute('onclick','handleClick(this)');
+		newInput.className=(i+1);
+		var newLabel = document.createElement("label"); 
+		newLabel.htmlFor=(i+1);
+		newLabel.className="toggle";
+		var newSpan = document.createElement("span"); 
+		newSpan.className="toggle__handler";
+
+
+
+		newLabel.appendChild(newSpan)
+		newDiv.appendChild(newInput)
+		newDiv.appendChild(newLabel)
+		//document.children[0].children[1].appendChild(newDiv)
+
+
+		if(i==5)
+		{
+	r1 = t.insertRow(-1); 
+	r2 = t.insertRow(-1);
+			}
+			
+		c = r1.insertCell(-1);
+		num=r2.insertCell(-1);
+		num.innerHTML = i+1;
+		c.appendChild(newDiv);
+
+	}
+	DivTableContainer.appendChild(t);
+	document.getElementById("addtable").appendChild(DivTableContainer);
+	
+	
+		
+	
+	
+	
+</script>
+<script>
+function handleClick(cb) {
+  //url = base+"loadJson?dispositivo="+"dispositivo"+cb.id;
+
+if(cb.id==1)
+	url = base+"salidas?estado="+cb.checked+"&pin=16";
+else if (cb.id==2)
+	url = base+"salidas?estado="+cb.checked+"&pin=14";
+else if (cb.id==3)
+	url = base+"salidas?estado="+cb.checked+"&pin=12";
+else if (cb.id==4)
+	url = base+"salidas?estado="+cb.checked+"&pin=13";
+else if (cb.id==5)
+	url = base+"salidas?estado="+cb.checked+"&pin=15";
+else if (cb.id==6)
+	url = base+"salidas?estado="+cb.checked+"&pin=2";
+else if (cb.id==7)
+	url = base+"salidas?estado="+cb.checked+"&pin=0";
+else if (cb.id==8)
+	url = base+"salidas?estado="+cb.checked+"&pin=4";
+else if (cb.id==9)
+	url = base+"salidas?estado="+cb.checked+"&pin=5";
+else if (cb.id==10)
+	url = base+"salidas?estado="+cb.checked+"&presetearin=10";
+
+  console.log(`boton ${cb.id} fue cambiado a ${cb.checked}`);
+  console.log(cb.getAttribute("categoria"));
+
+  <!--  ver respuesta sincronizada ------------------>
+  xhr.open("GET", url, true);
+  xhr.send();
+  if(cb.checked==true)
+  {
+  document.getElementById("confirmacion").innerHTML="<h2>"+"Toma corriente "+cb.id+" fue encendida"+"</h2>";
+  }
+  else
+  {
+  document.getElementById("confirmacion").innerHTML="<h2>"+"Toma corriente "+cb.id+" fue apagada"+"</h2>";
+  }
+  escan=true;
+  }
+</script>
+<script>
+function agregarProg()
+{
+	//event.preventDefault();
+	//get table rows
+	if(tblPersonalizada)
+	{
+	var tbl_row = $(document).find('.personalizada').find('.tbl_code_with_mark').find('tr');
+	tblPersonalizada=false;
+	}
+	else
+	var tbl_row = $(document).find('.rapida').find('.tbl_code_with_mark').find('tr');	 
+		var tbl = '';
+	$.each(ajax_data_test, function(index, val) 
+			{
+	//create a random id
+	var row_id = Math.random().toString(36).substr(2);
+
+	
+
+	tbl +='<tr row_id="'+row_id+'">';
+		tbl +='<td ><div class="row_data" contenteditable="true" edit_type="click" col_name="dia">'+val['dia']+'</div></td>';
+		tbl +='<td ><div class="row_data" contenteditable="true" edit_type="click" col_name="dispositivo">'+val['dispositivo']+'</div></td>';
+		tbl +='<td ><div class="row_data" contenteditable="true" edit_type="click" col_name="encendido">'+val['encendido']+'</div></td>';
+		tbl +='<td ><div class="row_data" contenteditable="true" edit_type="click" col_name="apagado">'+val['apagado']+'</div></td>';
+
+		//--->edit options > start
+	tbl +='<td>';
+					 
+						tbl +='<span class="btn_edit" > <a href="#" class="btn btn-link " row_id="'+row_id+'" > Edit</a> </span>';
+
+						//only show this button if edit button is clicked
+						tbl +='<span class="btn_save"> <a href="#" class="btn btn-link"  row_id="'+row_id+'"> Save</a> | </span>';
+						tbl +='<span class="btn_cancel"> <a href="#" class="btn btn-link" row_id="'+row_id+'"> Cancel</a> | </span>';
+						tbl +='<a href="#" class="btn_delete btn btn-link1 text-danger" row_id="'+row_id+'"> Delete</a>';
+					tbl +='</td>';
+		//--->edit options > end	
+
+	tbl +='</tr>';
+	});
+	tbl_row.last().after(tbl);
+	$(document).find('.btn_save').hide();
+	$(document).find('.btn_cancel').hide();
+	$(document).find('.btn_delete').hide(); 
+
+	$(document).find('.tbl_code_with_mark').find('tr').last().find('.dia').focus();
+	ajax_data_test=[];
+	Dias=[];
+};
+</script>
+<script>
+//version 4
+
+ajax_data_test=[];
+var dddd=0;
+var Hini;
+var Hfin;
+var Dias=[];
+var DiasN=[];
+function dia(d)
+{
+DiasN=[];
+console.log("boton oprimido");
+now.getDay();
+console.log(weekday[now.getDay()]);//hoy
+if(d==1)
+{
+Hini=$("#DI")[0].attributes.value.value;
+Hfin= $("#DF")[0].attributes.value.value;
+Dias[0]=weekday[now.getDay()];
+DiasN[0]=`"${now.getDay()}"`;
+}
+if(d==2)
+{
+Hini=$("#NI")[0].attributes.value.value;
+Hfin= $("#NF")[0].attributes.value.value;
+Dias[0]=weekday[now.getDay()];
+DiasN[0]=`"${now.getDay()}"`;
+}
+if(d==3)
+{
+Hini=$("#MI")[0].attributes.value.value;
+Hfin= $("#MF")[0].attributes.value.value;
+Dias[0]=weekday[(now.getDay()+1)%7];//para indicar el dia siguiente se nece
+DiasN[0]=`"${(now.getDay()+1)%7}"`;
+}
+if(d==4)
+{
+Hini=$("#FI")[0].attributes.value.value;
+Hfin= $("#FF")[0].attributes.value.value;
+Dias.push(weekday[1]);
+Dias.push(weekday[2]);
+Dias.push(weekday[3]);
+Dias.push(weekday[4]);
+Dias.push(weekday[5]);
+DiasN.push("1");
+DiasN.push("2");
+DiasN.push("3");
+DiasN.push("4");
+DiasN.push("5");
+
+}
+if(d==5)
+{
+Hini=$("#OI")[0].attributes.value.value;
+Hfin= $("#OF")[0].attributes.value.value;
+Dias.push(weekday[0]);
+Dias.push(weekday[6]);
+DiasN.push("0");
+DiasN.push("6");
+}
+if(d==6)
+{
+Hini=$("#FESI")[0].attributes.value.value;
+Hfin= $("#FESF")[0].attributes.value.value;
+console.log(weekday[now.getDay()]);//hoy
+DiasN[0]=`"${now.getDay()}"`;
+}
+if(d==7)
+{
+Hini=$("#ITERI")[0].attributes.value.value;
+Hfin= $("#ITERF")[0].attributes.value.value;
+Dias.push(weekday[1]);
+Dias.push(weekday[2]);
+Dias.push(weekday[3]);
+Dias.push(weekday[4]);
+Dias.push(weekday[5]);
+Dias.push(weekday[0]);
+Dias.push(weekday[6]);
+DiasN.push("1");
+DiasN.push("2");
+DiasN.push("3");
+DiasN.push("4");
+DiasN.push("5");
+DiasN.push("0");
+DiasN.push("6");
+}
+if(d==8)// programacion personalizada
+{
+Hini=document.getElementById("appt1").value;
+Hfin=document.getElementById("appt2").value;
+diasSelectos.forEach(dia => Dias.push(weekday[parseInt(dia)]));
+diasSelectos.forEach(dia=> DiasN.push(`\"${dia}\"`));
+tblPersonalizada=true;
+}
+console.log(Hini);
+console.log(Hfin);
+dispositivosSelectos.forEach(logArrayElements);
+agregarProg();
+
+}
+function logArrayElements(element, index, array) {
+let obj;
+var tt="";
+//obj = '"dia":"' + weekday[now.getDay()] + '","dispositivo":"' + element+'","encendido":"'+$("#DI")[0].attributes.value.value+'","apagado":"'+$("#DF")[0].attributes.value.value+'"';
+try{
+Dias.forEach(dia => ajax_data_test.push(JSON.parse(`{"dia":"${dia}","dispositivo":"${element}","encendido":"${Hini}","apagado":"${Hfin}"}`)));
+//DiasN.forEach(dia => console.log(`\"${dia}\":[[\"${Hini}\",\"${Hfin}\"]],`));//formato en arduino segun versiones anteriores
+DiasN.forEach(dia => tt=tt+`${dia}:[[\"${Hini}\",\"${Hfin}\"]],`);//formato en arduino segun versiones anteriores
+}
+catch(error)
+{
+//obj=JSON.parse(`{"dia":"${weekday[now.getDay()]}","dispositivo":"${element}","encendido":"${Hini}","apagado":"${Hfin}"}`);
+console.log(error);
+}
+var longitud=tt.length;
+var recorte=tt.substring(0,longitud-1);
+tt=`{${recorte}}dispositivo:${element}#`;
+    console.log(tt);
+	ProgSemana.push(tt);
+tt="";
+	//ajax_data_test.push(obj);
+}
+/*
+//version 3 // volver a cometarear
+function dia(d)
+{
+
+w=document.getElementsByClassName("table")[0]
+
+if(d==1)//dia
+{
+horarioInicio=DI;
+horarioFinal=DF;
+}
+if(d==2)//noche
+{
+horarioInicio=NI;
+horarioFinal=NF;
+}
+if(d==3)//madrugada
+{
+horarioInicio=MI;
+horarioFinal=MF;
+}
+if(d==4)//laboral
+{
+	seleccionDisp(document.getElementById("dia1"));
+	seleccionDisp(document.getElementById("dia2"));
+	seleccionDisp(document.getElementById("dia3"));
+	seleccionDisp(document.getElementById("dia4"));
+	seleccionDisp(document.getElementById("dia5"));
+horarioInicio=FI;
+horarioFinal=FF;
+}
+if(d==5)// fin semana
+{
+		seleccionDisp(document.getElementById("dia0"));
+		seleccionDisp(document.getElementById("dia6"));
+horarioInicio=OI;
+horarioFinal=OF;
+}
+if(d==6)//festivo
+{
+horarioInicio=FESI;
+horarioFinal=FESF;
+}
+if(d==7)//24/7
+{
+    horarioInicio=ITERI;
+    horarioFinal=ITERF;
+	if(w.children[0].rows[0].cells[3].getAttribute("selecto")=="si")
+	{
+		seleccionDisp(document.getElementById("dia1"));
+		seleccionDisp(document.getElementById("dia2"));
+		seleccionDisp(document.getElementById("dia3"));
+		seleccionDisp(document.getElementById("dia4"));
+		seleccionDisp(document.getElementById("dia5"));
+		seleccionDisp(w.children[0].rows[0].cells[3]);
+	}
+	
+	if(w.children[0].rows[0].cells[4].getAttribute("selecto")=="si")
+	{
+		seleccionDisp(document.getElementById("dia0"));
+		seleccionDisp(document.getElementById("dia6"));
+		seleccionDisp(w.children[0].rows[0].cells[4]);
+	}
+	
+	seleccionDisp(document.getElementById("dia0"));
+	seleccionDisp(document.getElementById("dia6"));
+	seleccionDisp(document.getElementById("dia1"));
+	seleccionDisp(document.getElementById("dia2"));
+	seleccionDisp(document.getElementById("dia3"));
+	seleccionDisp(document.getElementById("dia4"));
+	seleccionDisp(document.getElementById("dia5"));
+}
+
+console.log(horarioInicio);
+console.log(horarioFinal);
+dias=["dia0","dia1","dia2","dia3","dia4","dia5","dia6"];
+tttt="";
+//document.getElementById("confirmacionRapida").innerHTML="<h2>"+"Dias laborales seleccionados"+"</h2>";
+for(rr=0;rr<dispositivosSelectos.length;rr++)
+{
+	tt="";
+	for(dd=0;dd<dias.length;dd++)
+	{
+		sss=document.getElementById(dias[dd]);
+		if(sss.getAttribute("selecto")=="si")
+			tt=tt+'"'+dd+'":['+`[\"${horarioInicio}\",\"${horarioFinal}\"]],`;
+		else
+			tt=tt+'"'+dd+'":[],';
+		
+		//console.log(tt);
+	}
+console.log('{'+tt+'}dispositivo:'+dispositivosSelectos[rr]+'#');
+ctrlDisp.push('{'+tt+'}dispositivo:'+dispositivosSelectos[rr]+'#');
+tttt=tttt+'{'+tt+'}dispositivo:'+dispositivosSelectos[rr]+'#';
+
+}
+document.getElementById("confirmacionRapida").innerHTML="<h2>"+tttt+"</h2>";
+programarDisp=true;
+	//console.log("funcion dia");
+	//console.log(d);
+	contador=0;
+
+
+	
+}
+*//////////////// volver a comentarear
+</script>
+<script src="Programador.js"></script>
+<!-- solo para recordar
+<script>
+function dia__(d)
+{
+if(d==1)
+{
+horarioInicio=DI;
+horarioFinal=DF;
+}
+if(d==2)
+{
+horarioInicio=NI;
+horarioFinal=NF;
+}
+if(d==3)
+{
+horarioInicio=MI;
+horarioFinal=MF;
+}
+if(d==4)
+{
+horarioInicio=FI;
+horarioFinal=FF;
+}
+if(d==5)
+{
+horarioInicio=OI;
+horarioFinal=OF;
+}
+if(d==6)
+{
+horarioInicio=FESI;
+horarioFinal=FESF;
+}
+if(d==7)
+{
+horarioInicio=ITERI;
+horarioFinal=ITERF;
+}
+console.log(horarioInicio);
+console.log(horarioFinal);
+
+
+
+
+
+
+
+
+	//console.log("funcion dia");
+	//console.log(d);
+	contador=0;
+	if(d==5)//seleccionar todos los dias laborales
+	{
+	//
+	document.getElementById("confirmacionRapida").innerHTML="<h2>"+"Dias laborales seleccionados"+"</h2>";
+	w=document.getElementsByClassName("table")[0]
+	if(w.children[0].rows[0].cells[4].getAttribute("selecto")=="si")//fin de semana
+	{
+		seleccionDisp(document.getElementById("dia0"));
+		seleccionDisp(document.getElementById("dia6"));
+		//seleccionDisp(w.children[0].rows[0].cells[4]);
+	}
+	if(w.children[0].rows[0].cells[6].getAttribute("selecto")=="si")//24/7
+	{
+		seleccionDisp(document.getElementById("dia0"));
+		seleccionDisp(document.getElementById("dia6"));
+		//seleccionDisp(w.children[0].rows[0].cells[6]);
+		seleccionDisp(document.getElementById("dia1"));
+		seleccionDisp(document.getElementById("dia2"));
+		seleccionDisp(document.getElementById("dia3"));
+		seleccionDisp(document.getElementById("dia4"));
+		seleccionDisp(document.getElementById("dia5"));
+	}
+		if(w.children[0].rows[0].cells[5].getAttribute("selecto")=="si")
+	{
+		//seleccionDisp(document.getElementById("dia0"));
+		//seleccionDisp(document.getElementById("dia6"));
+		seleccionDisp(w.children[0].rows[0].cells[5]);
+	}
+	//seleccionDisp(document.getElementById("dia1"));
+	//seleccionDisp(document.getElementById("dia2"));
+	//seleccionDisp(document.getElementById("dia3"));
+	//seleccionDisp(document.getElementById("dia4"));
+	//seleccionDisp(document.getElementById("dia5"));
+
+
+	}
+	if(d==4)//seleccionar solo el sabado y domingo
+	{
+		document.getElementById("confirmacionRapida").innerHTML="<h2>"+"Dias fin de semana seleccionados"+"</h2>";
+		w=document.getElementsByClassName("table")[0]
+		if(w.children[0].rows[0].cells[3].getAttribute("selecto")=="si")
+		{
+			seleccionDisp(document.getElementById("dia1"));
+			seleccionDisp(document.getElementById("dia2"));
+			seleccionDisp(document.getElementById("dia3"));
+			seleccionDisp(document.getElementById("dia4"));
+			seleccionDisp(document.getElementById("dia5"));
+			//seleccionDisp(w.children[0].rows[0].cells[3]);
+		}
+		if(w.children[0].rows[0].cells[6].getAttribute("selecto")=="si")//24/7
+		{
+			seleccionDisp(document.getElementById("dia0"));
+			seleccionDisp(document.getElementById("dia6"));
+			//seleccionDisp(w.children[0].rows[0].cells[6]);
+			seleccionDisp(document.getElementById("dia1"));
+			seleccionDisp(document.getElementById("dia2"));
+			seleccionDisp(document.getElementById("dia3"));
+			seleccionDisp(document.getElementById("dia4"));
+			seleccionDisp(document.getElementById("dia5"));
+		}
+		if(w.children[0].rows[0].cells[5].getAttribute("selecto")=="si")
+		{
+			//seleccionDisp(document.getElementById("dia0"));
+			//seleccionDisp(document.getElementById("dia6"));
+			seleccionDisp(w.children[0].rows[0].cells[5]);
+		}
+		//seleccionDisp(document.getElementById("dia0"));
+		//seleccionDisp(document.getElementById("dia6"));
+
+	
+	
+	}
+
+	if(d==7)//seleccionar 24/7
+	{
+	document.getElementById("confirmacionRapida").innerHTML="<h2>"+"Todos los dias seleccionados"+"</h2>";
+	seleccionDisp(document.getElementById("dia0"));
+	seleccionDisp(document.getElementById("dia1"));
+	seleccionDisp(document.getElementById("dia2"));
+	seleccionDisp(document.getElementById("dia3"));
+	seleccionDisp(document.getElementById("dia4"));
+	seleccionDisp(document.getElementById("dia5"));
+	seleccionDisp(document.getElementById("dia6"));
+	w=document.getElementsByClassName("table")[0];
+	if(w.children[0].rows[0].cells[3].getAttribute("selecto")=="si")
+	{
+		seleccionDisp(document.getElementById("dia1"));
+		seleccionDisp(document.getElementById("dia2"));
+		seleccionDisp(document.getElementById("dia3"));
+		seleccionDisp(document.getElementById("dia4"));
+		seleccionDisp(document.getElementById("dia5"));
+		seleccionDisp(w.children[0].rows[0].cells[3]);
+	}
+	if(w.children[0].rows[0].cells[4].getAttribute("selecto")=="si")
+	{
+		seleccionDisp(document.getElementById("dia0"));
+		seleccionDisp(document.getElementById("dia6"));
+		seleccionDisp(w.children[0].rows[0].cells[4]);
+	}
+	if(w.children[0].rows[0].cells[5].getAttribute("selecto")=="si")
+	{
+		//seleccionDisp(document.getElementById("dia0"));
+		//seleccionDisp(document.getElementById("dia6"));
+		seleccionDisp(w.children[0].rows[0].cells[5]);
+	}	
+	}
+	
+	if(d==6)//hoy es festivo
+	{
+	document.getElementById("confirmacionRapida").innerHTML="<h2>"+"Dia festivo seleccionado"+"</h2>";
+		w=document.getElementsByClassName("table")[0];
+		for(j=3;j<w.children[0].rows[0].cells.length;j++)
+		{
+			if(w.children[0].rows[0].cells[j].getAttribute("selecto")=="si" && j!=5)
+			{
+				seleccionDisp(w.children[0].rows[0].cells[j]);
+			}
+		}
+		w=document.getElementsByClassName("dispositivo")[1]
+		for(j=1;j<w.children.length;j++)
+		{
+			if(w.children[j].getAttribute("selecto")=="si")
+			{
+				seleccionDisp(w.children[j]);
+			}
+		}
+		
+	}
+	
+	
+}
+
+</script>
+-->
+<script>
+function formatear()
+{
+url = base+"leerConfig"; 
+  xhr.open("GET", url, true);
+  xhr.send();
+
+}
+</script>
+<script>
+$(document).on('click', '#guardar', function(event) 
+{
+
+programarDisp=true;
+ctrlDisp=ProgSemana;
+url = base+"saludo";
+console.log(url);
+a= document.getElementById("ninguno");
+a.click();
+a=$("[selecto=si]")
+for(aa=0;aa<a.length;aa++)
+{
+if(a[aa].id.search("dia")>=0)
+{
+a[aa].click();
+console.log(a[aa].id);
+}
+}
+dispositivosSelectos=[];
+crearTabla();
+
+  xhr.open("GET", url, true);
+  xhr.send();
+
+});
+</script>
+<script>
+function stopescaner()
+{
+ clearInterval(stopScan);
+
+}
+</script>
+
+<!-- respuesta sincronizada ------------------>
+<script>
+	xhr.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) 
+	{
+		//document.getElementById("led-state").innerHTML = this.responseText;
+		console.log(this.responseText);
+		if(this.responseText.charAt(0)=='#' && this.responseText.charAt(1)=='#' && this.responseText.charAt(2)=='#' )
+		   {
+			partido=this.responseText.split(',');
+			console.log(partido);
+			document.getElementById("DI").value=partido[1];
+			document.getElementById("DF").value=partido[2];
+			document.getElementById("NI").value=partido[3];
+			document.getElementById("NF").value=partido[4];
+			document.getElementById("MI").value=partido[5];
+			document.getElementById("MF").value=partido[6];
+			document.getElementById("FI").value=partido[7];
+			document.getElementById("FF").value=partido[8];
+			document.getElementById("OI").value=partido[9];
+			document.getElementById("OF").value=partido[10];
+			document.getElementById("FESI").value=partido[11];
+			document.getElementById("FESF").value=partido[12];
+			document.getElementById("ITERI").value=partido[13];
+			document.getElementById("ITERF").value=partido[14];
+			
+			
+			DI=document.getElementById("DI").value;
+			DF=document.getElementById("DF").value;
+  
+			NI=document.getElementById("NI").value;
+			NF=document.getElementById("NF").value;
+  
+			MI=document.getElementById("MI").value;
+			MF=document.getElementById("MF").value;
+  
+			FI=document.getElementById("FI").value;
+			FF=document.getElementById("FF").value;
+  
+  
+			OI=document.getElementById("OI").value;
+			OF=document.getElementById("OF").value;
+  
+
+			FESI=document.getElementById("FESI").value;
+			FESF=document.getElementById("FESF").value;
+  
+			ITERI=document.getElementById("ITERI").value;
+			ITERF=document.getElementById("ITERF").value;
+			
+			
+			
+		   }
+		if(escan==true)
+		{
+		escan=false
+			if(this.responseText.charAt(0)=="1")
+			{
+				document.getElementById(1).checked = true;
+			}
+			else
+			{
+				document.getElementById(1).checked = false;
+			}
+			if(this.responseText.charAt(1)=="1")
+			{
+				document.getElementById(2).checked = true;
+			}
+			else
+			{
+				document.getElementById(2).checked = false;
+			}
+			if(this.responseText.charAt(2)=="1")
+			{
+				document.getElementById(3).checked = true;
+			}
+			else
+			{
+				document.getElementById(3).checked = false;
+			}
+			if(this.responseText.charAt(3)=="1")
+			{
+				document.getElementById(4).checked = true;
+			}
+			else
+			{
+				document.getElementById(4).checked = false;
+			}
+			if(this.responseText.charAt(4)=="1")
+			{
+				document.getElementById(5).checked = true;
+			}
+			else
+			{
+				document.getElementById(5).checked = false;
+			}
+			if(this.responseText.charAt(5)=="1")
+			{
+				document.getElementById(6).checked = true;
+			}
+			else
+			{
+				document.getElementById(6).checked = false;
+			}
+			if(this.responseText.charAt(6)=="1")
+			{
+				document.getElementById(7).checked = true;
+			}
+			else
+			{
+				document.getElementById(7).checked = false;
+			}
+			if(this.responseText.charAt(7)=="1")
+			{
+				document.getElementById(8).checked = true;
+			}
+			else
+			{
+				document.getElementById(8).checked = false;
+			}
+			if(this.responseText.charAt(8)=="1")
+			{
+				document.getElementById(9).checked = true;
+			}
+			else
+			{
+				document.getElementById(9).checked = false;
+			}
+			if(this.responseText.charAt(9)=="1")
+			{
+				document.getElementById(10).checked = true;
+			}
+			else
+			{
+				document.getElementById(10).checked = false;
+			}
+			load_();
+			
+						
+		}
+		if(programarDisp==true)
+		{
+			if(mm<ctrlDisp.length)
+			{
+				url = base+"saveJson?semana="+ctrlDisp[mm];
+				if(this.responseText.search("guardado en")>-1)
+					mm++;
+				xhr.open("GET", url, true);
+				xhr.send();
+			}
+			else
+			{
+				ctrlDisp=[];
+				ProgSemana=[];
+				programarDisp=false;
+				mm=0;
+			}
+		}
+		if(actualManual==true)
+		{
+		
+		}
+		if(atodos==true)
+		{
+		console.log("respondido");
+		document.getElementById("confirmacion").innerHTML="respondido"
+		atodos=false;
+		}
+	}
+  };
+</script>
+<!---------------------------------------------->
+
+</body>
+</html>
