@@ -21,6 +21,7 @@
     <title>Gestión de Horarios</title>
 </head>
 <body>
+
     <div class="w3-sidebar w3-bar-block w3-light-grey w3-card" style="width:190px">
         <h5 class="w3-bar-item">Menu</h5>
         <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Bogota')">Control manual</button>
@@ -387,6 +388,9 @@ const SyncStatusView = {
         EventBus.subscribe('sincronizacionExitosa', this.mostrarExito);
         EventBus.subscribe('sincronizacionFallida', this.mostrarError);
         EventBus.subscribe('horariosActualizados', this.mostrarSincronizando);
+        EventBus.subscribe('estadoConexion', function(data) {
+    SyncStatusView.mostrarEstadoConexion(data.mensaje, data.estado);
+});
     },
     
     mostrarSincronizando: function() {
@@ -419,6 +423,14 @@ const SyncStatusView = {
             statusElement.textContent = 'Error: ' + error;
             statusElement.className = 'sync-status error';
             // No ocultar automáticamente en caso de error para que el usuario lo vea
+        }
+    },
+    mostrarEstadoConexion: function(mensaje, estado) {
+        const statusElement = document.getElementById('sync-status');
+        if (statusElement) {
+            statusElement.textContent = mensaje;
+            statusElement.className = `sync-status ${estado}`;
+            statusElement.style.opacity = '1';
         }
     }
 };
@@ -695,118 +707,175 @@ const PeriodoController = {
 };
 
 // Nuevo controlador para sincronización con el servidor
+// Corrected SyncController with fixed keep-alive functionality
 const SyncController = {
     apiUrlPOST: 'https://tu-api-endpoint.com/horarios', // Reemplaza con la URL real de tu API
     apiUrlWS: 'http://192.168.1.111:81', 
     ws: null,
-    horaEnSegundos:function(hora = "00:00:00") {
-    // Divide la hora en partes (horas y minutos)
-    const partes = hora.split(':');
-    const horas = parseInt(partes[0], 10);    // Convierte las horas a entero
-    const minutos = parseInt(partes[1], 10);  // Convierte los minutos a entero
+    keepAliveTimeout: null, // Temporizador para el keep-alive
+    keepAliveInterval: 5000, // Intervalo de tiempo para validar el keep-alive (5 segundos)
 
-    // Calcula el total en segundos (sin segundos específicos)
-    return minutos * 60 + horas * 3600;
-},
-    procesarDatosHoraEnSegundos:function(datos) {//funciono
-    let resultado = {};
-
-    // Procesar las claves principales (1, 2, 3, 4, ...)
-    const datosConvertidos = Object.fromEntries(
-        Object.entries(datos).map(([clavePrincipal, subObjeto]) => [
-            clavePrincipal, // Mantener la clave principal
-            Object.fromEntries(
-                // Procesar las claves internas del subobjeto (0, 1, 2, ...)
-                Object.entries(subObjeto).map(([dia, intervalos]) => [
-                    dia,
-                    intervalos.map(intervalo => intervalo.map(this.horaEnSegundos))
-                ])
-            )
-        ])
-    );
-    resultado=JSON.stringify(datosConvertidos, null, 0);
-    return resultado;
-},
-    init: function() {
+    horaEnSegundos: function(hora = "00:00:00") {
+        // Divide la hora en partes (horas y minutos)
+        const partes = hora.split(':');
+        const horas = parseInt(partes[0], 10);    // Convierte las horas a entero
+        const minutos = parseInt(partes[1], 10);  // Convierte los minutos a entero
         
+        // Calcula el total en segundos (sin segundos específicos)
+        return minutos * 60 + horas * 3600;
+    },
+
+    procesarDatosHoraEnSegundos: function(datos) {
+        let resultado = {};
+
+        // Procesar las claves principales (1, 2, 3, 4, ...)
+        const datosConvertidos = Object.fromEntries(
+            Object.entries(datos).map(([clavePrincipal, subObjeto]) => [
+                clavePrincipal, // Mantener la clave principal
+                Object.fromEntries(
+                    // Procesar las claves internas del subobjeto (0, 1, 2, ...)
+                    Object.entries(subObjeto).map(([dia, intervalos]) => [
+                        dia,
+                        intervalos.map(intervalo => intervalo.map(this.horaEnSegundos))
+                    ])
+                )
+            ])
+        );
+        resultado = JSON.stringify(datosConvertidos, null, 0);
+        return resultado;
+    },
+
+    init: function() {
+        // Crear la conexión WebSocket
         this.ws = new WebSocket(this.apiUrlWS);
-        //this.ws=this.webSocket;
-        this.ws.onopen = function() {
-            console.log("Conectado al servidor WebSocket.");
-        };
+        
+        // Configurar manejadores de eventos para WebSocket
+        this.ws.onopen = this.handleWebSocketOpen.bind(this);
+        this.ws.onmessage = this.handleWebSocketMessage.bind(this);
+        this.ws.onerror = this.handleWebSocketError.bind(this);
+        this.ws.onclose = this.handleWebSocketClose.bind(this);
 
-        this.ws.onmessage = function(event) {
-            console.log("Respuesta del servidor:", event.data);
-            try {
-                const data = JSON.parse(event.data);
-                //console.log("Respuesta del servidor:", data);
-                EventBus.publish('sincronizacionExitosa', data);
-            } catch (error) {
-                //console.warn("No se pudo parsear la respuesta del servidor como JSON:", event.data);
-                if (event.data.includes("estados")){
-                    let partes = event.data.split(",");
-                    partes.forEach((parte, index) => {
-                        if (parte.includes("manual")) {
-                            HorarioModel.controlManual[parte] = "ON";
-                            HorarioModel.activarControlManual(parte);//  esta creando un loop
-                        } 
-                        else{
-                            HorarioModel.controlManual[parte]="OFF"; 
-                            HorarioModel.desactivarControlManual(`manual${index}`); 
-                            //console.log(`desactivar control manual ${parte} con indice ${index}`); 
-                        }
-                    });
-                    //EventBus.publish('manualActualizados', partes);
-                }
-                EventBus.publish('sincronizacionExitosa', event.data); // Se envía como string en caso de error
-            }
-        };
-
-        this.ws.onerror = function(error) {
-            console.error("Error en el WebSocket:", error);
-            EventBus.publish('sincronizacionFallida', error.message);
-        };
-
-        this.ws.onclose = function() {
-            console.log("Conexión WebSocket cerrada.");
-        };
-
-
-        // Suscribirse al evento de actualización de horarios
+        // Suscribirse a eventos
         EventBus.subscribe('horariosActualizados', this.sincronizarDatosWS.bind(this));
         EventBus.subscribe('manualPuestoActualizado', this.sincronizarDatosWS.bind(this));
-       // EventBus.subscribe('horariosActualizados', this.sincronizarDatosPOST.bind(this));
     },
-    sincronizarDatosWS:function(jsonData){
+
+    // Manejadores de eventos WebSocket
+    handleWebSocketOpen: function() {
+        console.log("Conectado al servidor WebSocket.");
+        EventBus.publish('estadoConexion', {
+        mensaje: "Mensaje recibido del servidor",
+        estado: "success" // Puedes usar "success", "warning", "error", etc.
+    });
+        this.iniciarKeepAlive();
+    },
+
+    handleWebSocketMessage: function(event) {
+        console.log("Respuesta del servidor:", event.data);
+        this.reiniciarKeepAlive(); // Reinicia el temporizador cuando se recibe un mensaje
+        
+        try {
+            const data = JSON.parse(event.data);
+            EventBus.publish('sincronizacionExitosa', data);
+        } catch (error) {
+            if (event.data.includes("estados")) {
+                let partes = event.data.split(",");
+                partes.forEach((parte, index) => {
+                    if (parte.includes("manual")) {
+                        HorarioModel.controlManual[parte] = "ON";
+                        HorarioModel.activarControlManual(parte);
+                    } else {
+                        HorarioModel.controlManual[parte] = "OFF"; 
+                        HorarioModel.desactivarControlManual(`manual${index}`);
+                    }
+                });
+            }
+            EventBus.publish('sincronizacionExitosa', event.data);
+        }
+    },
+
+    handleWebSocketError: function(error) {
+        console.error("Error en el WebSocket:", error);
+        EventBus.publish('sincronizacionFallida', error.message);
+        this.mostrarEstadoConexion("Error en la conexión", "error");
+    },
+
+    handleWebSocketClose: function() {
+        console.log("Conexión WebSocket cerrada.");
+        this.mostrarEstadoConexion("Conexión cerrada", "error");
+        this.detenerKeepAlive();
+    },
+
+    // Funciones de Keep-Alive
+    iniciarKeepAlive: function() {
+        console.log("Iniciando temporizador de keep-alive...");
+        // Limpiar cualquier temporizador existente primero
+        this.detenerKeepAlive();
+        
+        // Configura un nuevo temporizador
+        this.keepAliveTimeout = setTimeout(() => {
+            console.log("Keep-alive timeout triggered");
+            //this.mostrarEstadoConexion("Conexión inactiva", "warning");
+            EventBus.publish('estadoConexion', {
+        mensaje: "Conexión inactiva, refrescar pagina",
+        estado: "warning" // Puedes usar "success", "warning", "error", etc.
+    });
+            
+            // Opcional: Intenta reconectar
+            // this.reconectar();
+        }, this.keepAliveInterval);
+    },
+
+    reiniciarKeepAlive: function() {
+        // Reinicia el temporizador del keep-alive
+        this.detenerKeepAlive();
+        this.iniciarKeepAlive();
+    },
+
+    detenerKeepAlive: function() {
+        // Detiene el temporizador del keep-alive
+        if (this.keepAliveTimeout) {
+            clearTimeout(this.keepAliveTimeout);
+            this.keepAliveTimeout = null;
+        }
+    },
+
+    // Función opcional de reconexión
+    reconectar: function() {
+        console.log("Intentando reconectar...");
+        if (this.ws) {
+            this.ws.close();
+        }
+        this.init();
+    },
+
+    sincronizarDatosWS: function(jsonData) {
         console.log("Sincronizando datos con el servidor a través de WebSocket...");
 
-        let datosEnSegundos=JSON.stringify(jsonData);
-        let datosParaEnviar=jsonData;
-    // Crear una copia de los datos para evitar modificar los originales
-    let selector="manual1" in jsonData;
-    if (!selector){
-        datosEnSegundos=this.procesarDatosHoraEnSegundos(jsonData);
-        datosParaEnviar = JSON.parse(JSON.stringify(datosEnSegundos));
-    }
-    
-
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-        try {
-            this.ws.send(datosEnSegundos);
-            console.log("Datos enviados al servidor:", datosParaEnviar);
-        } catch (error) {
-            console.error("Error al enviar datos por WebSocket:", error);
-            EventBus.publish('sincronizacionFallida', error.message);
+        let datosEnSegundos = JSON.stringify(jsonData);
+        let datosParaEnviar = jsonData;
+        
+        // Crear una copia de los datos para evitar modificar los originales
+        let selector = "manual1" in jsonData;
+        if (!selector) {
+            datosEnSegundos = this.procesarDatosHoraEnSegundos(jsonData);
+            datosParaEnviar = JSON.parse(JSON.stringify(datosEnSegundos));
         }
-    } else {
-        console.error("El WebSocket no está conectado.");
-        EventBus.publish('sincronizacionFallida', "El WebSocket no está conectado.");
-    }
-
-
-
-
+        
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            try {
+                this.ws.send(datosEnSegundos);
+                console.log("Datos enviados al servidor:", datosParaEnviar);
+            } catch (error) {
+                console.error("Error al enviar datos por WebSocket:", error);
+                EventBus.publish('sincronizacionFallida', error.message);
+            }
+        } else {
+            console.error("El WebSocket no está conectado.");
+            EventBus.publish('sincronizacionFallida', "El WebSocket no está conectado.");
+        }
     },
+
     sincronizarDatosPOST: function(jsonData) {
         console.log("Sincronizando datos con el servidor...");
         
@@ -829,19 +898,25 @@ const SyncController = {
         })
         .then(data => {
             console.log('Sincronización exitosa:', data);
-            // Si quieres notificar a la UI que la sincronización fue exitosa
             EventBus.publish('sincronizacionExitosa', data);
         })
         .catch(error => {
             console.error('Error al sincronizar con el servidor:', error);
-            // Si quieres notificar a la UI que hubo un error
             EventBus.publish('sincronizacionFallida', error.message);
         });
     },
     
-    // Método opcional para forzar la sincronización manualmente
+    // Método para forzar la sincronización manualmente
     forzarSincronizacion: function() {
         this.sincronizarDatosPOST(HorarioModel.jsonCommands4Puestos);
+    },
+
+    mostrarEstadoConexion: function(mensaje, estado) {
+        const statusElement = document.getElementById('sync-status');
+        if (statusElement) {
+            statusElement.textContent = mensaje;
+            statusElement.className = `sync-status ${estado}`;
+        }
     }
 };
 
