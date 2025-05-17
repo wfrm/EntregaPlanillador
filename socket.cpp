@@ -3,7 +3,7 @@
 #include "reloj.h"
 #include "servidor.h"
 WebSocketsServer webSocket = WebSocketsServer(81);
-int selector=-1;
+int selector=1;
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
   switch (type) {
