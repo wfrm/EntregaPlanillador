@@ -205,6 +205,10 @@ const HorarioModel = {
     diasSeleccionados: new Set(),
     estadoManual: new Set(),
 
+    init:function(){
+
+    },
+
     activarControlManual:function(puesto){
         this.estadoManual.add(puesto);
         this.controlManual[puesto] = "ON";
@@ -388,8 +392,10 @@ const SyncStatusView = {
         EventBus.subscribe('sincronizacionExitosa', this.mostrarExito);
         EventBus.subscribe('sincronizacionFallida', this.mostrarError);
         EventBus.subscribe('horariosActualizados', this.mostrarSincronizando);
+
         EventBus.subscribe('estadoConexion', function(data) {
-    SyncStatusView.mostrarEstadoConexion(data.mensaje, data.estado);
+        SyncStatusView.mostrarEstadoConexion(data.mensaje, data.estado);
+        
 });
     },
     
@@ -451,6 +457,7 @@ const PuestoController = {
         EventBus.subscribe('manualActualizados', this.actualizarVisualManual);
         EventBus.subscribe('manualActualizados', this.actualizarVisualManualToggle);
         EventBus.subscribe('manualActualizados', this.actualizarVisualManualLedCheckbox);
+        EventBus.subscribe('memoriaHorariosActualizados', this.actualizarVisualizacion);
         //
     },
 
@@ -496,6 +503,12 @@ const PuestoController = {
         HorarioModel.puestosSeleccionados.forEach(puesto => {
             $("#day-schedule").data('artsy.dayScheduleSelector').deserialize(jsonData[puesto]);
         });
+
+        if (HorarioModel.puestosSeleccionados.size === 0) {
+    console.log("No hay puestos seleccionados. memoria del microcontrolador programacion");
+    $("#day-schedule").data('artsy.dayScheduleSelector').deserialize(jsonData["puesto1"]);
+    // Realiza la acción correspondiente
+}
     }
     },
     actualizarVisualManual:function(data){
@@ -712,8 +725,123 @@ const SyncController = {
     apiUrlPOST: 'https://tu-api-endpoint.com/horarios', // Reemplaza con la URL real de tu API
     apiUrlWS: 'http://192.168.1.111:81', 
     ws: null,
+    apiUrlLeerConfig: 'http://192.168.1.111/leerConfig',
     keepAliveTimeout: null, // Temporizador para el keep-alive
     keepAliveInterval: 5000, // Intervalo de tiempo para validar el keep-alive (5 segundos)
+    esJSONValido:function(cadena) {
+    try {
+        JSON.parse(cadena); // Intenta analizar el string como JSON
+        return true; // Si no lanza un error, es un JSON válido
+    } catch (error) {
+        return false; // Si lanza un error, no es un JSON válido
+    }
+},
+actualizar:function(objetoOriginal,reemplazo){
+     // Crear un nuevo objeto con los valores actualizados
+const objetoActualizado = Object.fromEntries(
+  Object.entries(objetoOriginal).map(([clave, valorOriginal]) => {
+    // Si la clave existe en reemplazo, combinar los valores
+    if (reemplazo[clave]) {
+      return [clave, { ...valorOriginal, ...reemplazo[clave] }];
+    }
+    // Si no existe en reemplazo, mantener el valor original
+    return [clave, valorOriginal];
+  })
+);
+  return objetoActualizado; 
+},
+
+leerArchivoConfigRapida: function() {
+    const url = 'http://192.168.1.111/leerArchivo?archivo=config-rapida';
+
+    fetch(url, {
+        method: 'GET'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al obtener el archivo: ' + response.status);
+        }
+        return response.json(); // Si el servidor devuelve un JSON
+    })
+    .then(data => {
+        console.log('Archivo recibido:', data);
+
+        // Procesar los datos recibidos si es necesario
+       // const datosEnHoras = this.procesarDatosSegundosEnHoras(data);
+      //console.log(this.actualizar(HorarioModel.periodosPreconfigurados,data));
+        HorarioModel.periodosPreconfigurados=this.actualizar(HorarioModel.periodosPreconfigurados,data);
+
+        // Publicar el evento para actualizar la visualización
+        EventBus.publish('periodosActualizados', HorarioModel.periodosPreconfigurados);
+    })
+    .catch(error => {
+        console.error('Error al leer el archivo:', error);
+        EventBus.publish('sincronizacionFallida', error.message);
+    });
+},
+preparar:function(data){
+  const objetoSinIconos = Object.fromEntries(
+  Object.entries(data).map(([clave, valor]) => {
+    const { icono, ...resto } = valor;
+    return [clave, resto];
+  })
+);
+  return objetoSinIconos
+},
+
+enviarPeriodosPreconfigurados:function () {
+    // Convertir el objeto periodosPreconfigurados a JSON
+    //const datosParaEnviar = JSON.stringify(HorarioModel.periodosPreconfigurados);
+    const queryParams =  'configuracion='+JSON.stringify(this.preparar(HorarioModel.periodosPreconfigurados) );
+   
+    // Realizar la solicitud POST al endpoint /saveconfig-rapida
+    fetch(`http://192.168.1.111/saveconfig-rapida?${queryParams}`, {
+        method: 'GET',
+        /*headers: {
+            'Content-Type': 'application/json'
+        },
+        body: datosParaEnviar*/
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor: ' + response.status);
+        }
+        return response.json(); // Si el servidor devuelve una respuesta JSON
+    })
+    .then(data => {
+        console.log('Configuración guardada exitosamente:', data);
+        alert('Configuración guardada exitosamente.');
+    })
+    .catch(error => {
+        console.error('Error al guardar la configuración:', error);
+        alert('Error al guardar la configuración: ' + error.message);
+    });
+},
+    leerConfigYActualizarVisualizacion: function() {
+        fetch(this.apiUrlLeerConfig, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener la configuración: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Configuración recibida:', data);
+            datosEnHoras = this.procesarDatosSegundosEnHoras(data);
+
+            // Publicar el evento para actualizar la visualización
+            EventBus.publish('memoriaHorariosActualizados', datosEnHoras);
+        })
+        .catch(error => {
+            console.error('Error al leer la configuración:', error);
+            EventBus.publish('sincronizacionFallida', error.message);
+        });
+    },
 
     horaEnSegundos: function(hora = "00:00:00") {
         // Divide la hora en partes (horas y minutos)
@@ -724,6 +852,47 @@ const SyncController = {
         // Calcula el total en segundos (sin segundos específicos)
         return minutos * 60 + horas * 3600;
     },
+    SegundosEnHora:function(segundos = 0) {
+    // Asegurarnos de que los segundos sean positivos
+    segundos = Math.max(0, segundos);
+
+    // Calcular las horas, minutos y segundos
+    const horas = Math.floor(segundos / 3600);
+    const minutos = Math.floor((segundos % 3600) / 60);
+    const segundosRestantes = segundos % 60;
+
+    // Formatear para mostrar siempre dos dígitos
+    const formato = (valor) => valor.toString().padStart(2, '0');
+
+    return `${formato(horas)}:${formato(minutos)}`;
+},
+
+procesarDatosSegundosEnHoras:function(datos){
+    if (this.esJSONValido(datos)) {
+        console.log("es un json valido");
+    }
+    else {
+        console.log("no es un json valido");
+    }
+    var resultado = {};
+    //console.log(`datos del evento ${datos}`);
+    const datosConvertidosHoras = Object.fromEntries(
+            Object.entries(datos).map(([puesto, semana]) => [
+                puesto, // Mantener la clave principal
+                Object.fromEntries(
+                    // Procesar las claves internas del subobjeto (0, 1, 2, ...)
+                    Object.entries(semana).map(([dia, intervalos]) => [
+                        dia,
+                        intervalos.map(intervalo => intervalo.map(this.SegundosEnHora))
+                    ])
+                )
+            ])
+        );
+  resultado=JSON.stringify(datosConvertidosHoras, null, 0);
+   console.log(datosConvertidosHoras); /// apesar que no es un json valido lo procesa
+    
+    return datosConvertidosHoras;
+},
 
     procesarDatosHoraEnSegundos: function(datos) {
         let resultado = {};
@@ -746,6 +915,8 @@ const SyncController = {
     },
 
     init: function() {
+        this.leerArchivoConfigRapida(); 
+        SyncController.leerConfigYActualizarVisualizacion()
         // Crear la conexión WebSocket
         this.ws = new WebSocket(this.apiUrlWS);
         
@@ -757,6 +928,7 @@ const SyncController = {
 
         // Suscribirse a eventos
         EventBus.subscribe('horariosActualizados', this.sincronizarDatosWS.bind(this));
+        EventBus.subscribe('periodosActualizados', this.enviarPeriodosPreconfigurados.bind(this));
         EventBus.subscribe('manualPuestoActualizado', this.sincronizarDatosWS.bind(this));
     },
 

@@ -227,13 +227,21 @@ bool leerConfiguracion()
   }
   file2.close();
   Serial.println(msg);
-  server.send(200, "text/plane", msg);
+   server.sendHeader("Access-Control-Allow-Origin", "*");
+  server.sendHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  server.sendHeader("Access-Control-Allow-Headers", "Content-Type");
+  server.send(200, "application/json", msg);
   return true;
 }
+/*
+ forma de probar:
+   http://192.168.1.49/saveconfig-rapida?archivo=config-rapida
+*/
 void GetArchivoJson()
 {
   String mm = server.arg("archivo");
-  String resultado = procesarSolucitudArchivo(mm);
+  Serial.print("[243]leyendo arcivo ");Serial.println(mm);
+  String resultado = leerArchivoJson(mm);//procesarSolucitudArchivo(mm);
   Serial.println(resultado);
   server.send(200, "text/plain", resultado);
 }
@@ -243,7 +251,7 @@ void GetArchivoJson()
 
    curl "http://192.168.1.49/saveconfig-rapida?configuracion=%7B%22Dia%22%3A%7B%22inicio%22%3A%2200%3A00%22%2C%22fin%22%3A%2223%3A45%22%7D%2C%22Noche%22%3A%7B%22inicio%22%3A%2200%3A00%22%2C%22fin%22%3A%2223%3A45%22%7D%2C%22Madrugada%22%3A%7B%22inicio%22%3A%2200%3A00%22%2C%22fin%22%3A%2223%3A45%22%7D%2C%22FinSemana%22%3A%7B%22inicio%22%3A%2200%3A00%22%2C%22fin%22%3A%2223%3A45%22%7D%2C%22Ordinario%22%3A%7B%22inicio%22%3A%2200%3A00%22%2C%22fin%22%3A%2223%3A45%22%7D%2C%22Festivo%22%3A%7B%22inicio%22%3A%2200%3A00%22%2C%22fin%22%3A%2223%3A45%22%7D%2C%22Intermitencia%22%3A%7B%22encendido%22%3A%2200%3A00%22%2C%22apagado%22%3A%2200%3A00%22%7D%7D"
 */
-bool jsonconfigRapida()// guaradr clave en la eeprom
+bool jsonconfigRapida()// guardar la configuracion rapida en la memoria flash
 {
   Serial.println("guardando configuracion");
   //File file = SPIFFS.open("/configuracion.json", "w");
