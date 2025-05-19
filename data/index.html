@@ -102,8 +102,8 @@
 
         </div>
         <div id="Paris" class="w3-container city" style="display:none">
-            <!--
-            <h3>Selecciona Horario:</h3>
+            
+            <h3>Test  programacion:</h3>
             <label for="horaInicio">Hora de inicio:</label>
             <input type="time" id="horaInicio">
         
@@ -111,7 +111,7 @@
             <input type="time" id="horaFin">
         
             <button id="guardarHorario">Guardar Horario</button>
--->
+
             <h3>Selecciona los días:</h3>
             <button class="dia-btn" data-dia="0">Domingo</button>
             <button class="dia-btn" data-dia="1">Lunes</button>
@@ -588,7 +588,7 @@ const DiaController = {
         document.querySelectorAll('.dia-btn').forEach(boton => {
             const dia = boton.dataset.dia;
             if (dias.includes(dia)) {
-                boton.style.backgroundColor = "#F5B041";
+                boton.style.backgroundColor = "red";
             } else {
                 boton.style.backgroundColor = "";
             }
@@ -598,7 +598,7 @@ const DiaController = {
 
 const HorarioController = {
     init: function() {
-        //document.getElementById('guardarHorario').addEventListener('click', this.handleGuardarClick);
+        document.getElementById('guardarHorario').addEventListener('click', this.handleGuardarClick);
         
         // EventBus.subscribe('horariosActualizados', function(data) {
         //     console.log("JSON actualizado:", data);
