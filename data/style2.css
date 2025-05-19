@@ -115,15 +115,15 @@ h2
 	}
 .puesto-btn{
 	border: none;
-	margin: 6px;
+	margin: 4px;
 	box-shadow: 0 0 3px #999696, 0 0 6px #999696;
 	background-color: #007bff;
-	width: 15vw;
-	height: 9vw;
+	width: 7vw;
+	height: 3vw;
 	border-left: 1vw solid #7f868d;
 	border-radius: 0.315vw;
 	font-weight: bolder;
-	font-size: 2.2vw;
+	font-size: 1.0vw;
 	line-height: 3vw;
 	text-align: center;
 	color: #eceef0;

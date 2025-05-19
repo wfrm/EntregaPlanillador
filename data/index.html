@@ -680,7 +680,10 @@ const PeriodoController = {
     },
     
     updateData: function(periodo, tipo, valor) {
-        HorarioModel.actualizarPeriodo(periodo, tipo, valor);
+        //
+        setTimeout(() => {
+            HorarioModel.actualizarPeriodo(periodo, tipo, valor);
+        }, 3000); // Esperar 1 segundo antes de actualizar
     },
     
     handleButtonClick: function(button, periodo) {
