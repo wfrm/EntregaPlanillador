@@ -148,3 +148,8 @@ h2
 	color: white;
 	transition: 0.7s ease-in-out transform, 0.7s ease-in-out;
 }
+.botnesRapidos
+{
+	display: flex;
+	gap: 25px;
+}

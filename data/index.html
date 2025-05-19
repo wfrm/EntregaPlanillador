@@ -26,7 +26,7 @@
         <h5 class="w3-bar-item">Menu</h5>
         <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Bogota')">Control manual</button>
         <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'London')">Programacion rapida</button>
-        <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Paris')">Programacion personalizada</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Paris')">Configuracion Programacion rapida</button>
         <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Tokyo')">horario Semana</button>
         <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Cali')">Guardar en Memoria</button>
       </div>
@@ -96,30 +96,13 @@
                 </label>
                 <button class="puesto-btn" data-puesto="puesto4">Puesto 4</button>
             </div>
-            
-                <h3>Selecciona los días:</h3>
-                <button class="dia-btn" data-dia="0">Domingo</button>
-                <button class="dia-btn" data-dia="1">Lunes</button>
-                <button class="dia-btn" data-dia="2">Martes</button>
-                <button class="dia-btn" data-dia="3">Miércoles</button>
-                <button class="dia-btn" data-dia="4">Jueves</button>
-                <button class="dia-btn" data-dia="5">Viernes</button>
-                <button class="dia-btn" data-dia="6">Sábado</button>
+            <div class="botnesRapidos">
 
-                <h2>Editar Horarios</h2>
-                <table id="data-table">
-                    <thead>
-                        <tr>
-                            <th>Periodo</th>
-                            <th>Inicio</th>
-                            <th>Fin</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+            </div>
+
         </div>
         <div id="Paris" class="w3-container city" style="display:none">
+            <!--
             <h3>Selecciona Horario:</h3>
             <label for="horaInicio">Hora de inicio:</label>
             <input type="time" id="horaInicio">
@@ -128,6 +111,29 @@
             <input type="time" id="horaFin">
         
             <button id="guardarHorario">Guardar Horario</button>
+-->
+            <h3>Selecciona los días:</h3>
+            <button class="dia-btn" data-dia="0">Domingo</button>
+            <button class="dia-btn" data-dia="1">Lunes</button>
+            <button class="dia-btn" data-dia="2">Martes</button>
+            <button class="dia-btn" data-dia="3">Miércoles</button>
+            <button class="dia-btn" data-dia="4">Jueves</button>
+            <button class="dia-btn" data-dia="5">Viernes</button>
+            <button class="dia-btn" data-dia="6">Sábado</button>
+
+
+            <h2>Editar Horarios</h2>
+            <table id="data-table">
+                <thead>
+                    <tr>
+                        <th>Periodo</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         
         </div>
         <div id="Tokyo" class="w3-container city" style="display:none">
@@ -592,7 +598,7 @@ const DiaController = {
 
 const HorarioController = {
     init: function() {
-        document.getElementById('guardarHorario').addEventListener('click', this.handleGuardarClick);
+        //document.getElementById('guardarHorario').addEventListener('click', this.handleGuardarClick);
         
         // EventBus.subscribe('horariosActualizados', function(data) {
         //     console.log("JSON actualizado:", data);
@@ -630,8 +636,30 @@ const PeriodoController = {
     
     init: function() {
         this.createTable();
+        this.crearBotoneraRapida();
         
         EventBus.subscribe('periodosActualizados', this.actualizarTabla);
+    },
+
+    crearBotoneraRapida:function(){
+        const botoneraRapida = document.querySelector(".botnesRapidos");
+        botoneraRapida.innerHTML = "";
+
+for (let key in HorarioModel.periodosPreconfigurados) {
+    // Obtener el periodo actual del objeto
+    const periodo = HorarioModel.periodosPreconfigurados[key];
+    
+    // Usar += para añadir a lo que ya existe en innerHTML, no reemplazarlo
+    botoneraRapida.innerHTML += `
+        <div class="boton-item">
+        <button class="puesto-button" onclick="PeriodoController.handleButtonClick(this, '${key}')">
+            <img src="${periodo.icono}" alt="Icono" style="width: 72px; height: 72px;">
+            <span class="button-text"></span>
+        </button>
+        <p style="margin-top: 5px;">${key}</p>
+        </div>
+    `;
+}
     },
     
     createTable: function() {
@@ -643,7 +671,7 @@ const PeriodoController = {
             const periodo = HorarioModel.periodosPreconfigurados[key];
             
             row.innerHTML = `
-                <td> <button class="puesto-button" onclick="PeriodoController.handleButtonClick(this, '${key}')">
+                <td> <button class="puesto-button" >
                     <img src=${periodo.icono} alt="Icono" style="width: 72px; height: 72px;">
                         <span class="button-text"></span>
                      </button>
@@ -666,7 +694,7 @@ const PeriodoController = {
             //este codigo se repite todo: refactorizar
             row.innerHTML = `
 
-                            <td> <button class="puesto-button" onclick="PeriodoController.handleButtonClick(this, '${key}')">
+                            <td> <button class="puesto-button" >
                     <img src=${periodo.icono} alt="Icono" style="width: 72px; height: 72px;">
                         <span class="button-text"></span>
                      </button>
