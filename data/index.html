@@ -900,7 +900,7 @@ enviarPeriodosPreconfigurados:function () {
     const queryParams =  'configuracion='+JSON.stringify(this.preparar(HorarioModel.periodosPreconfigurados) );
    
     // Realizar la solicitud POST al endpoint /saveconfig-rapida
-    fetch(`http://192.168.1.111/saveconfig-rapida?${queryParams}`, {
+    fetch(`http:${BASE_URL}/saveconfig-rapida?${queryParams}`, {
         method: 'GET',
         /*headers: {
             'Content-Type': 'application/json'
