@@ -104,6 +104,7 @@
         <div id="Paris" class="w3-container city" style="display:none">
             
             <h3>Test  programacion:</h3>
+            <!---
             <label for="horaInicio">Hora de inicio:</label>
             <input type="time" id="horaInicio">
         
@@ -111,7 +112,32 @@
             <input type="time" id="horaFin">
         
             <button id="guardarHorario">Guardar Horario</button>
+-->
+<div class="botonera"><!-- todo: codigo html repetido-->
+    <div class="toggleWrapper temp-manual-btn">
+        <input type="checkbox" id="temp-dnGeneral" class="dnGeneral" data-puesto="manual1" >
+        <label for="temp-dnGeneral" class="toggle"><span class="toggle__handler"></span></label>
+        <p style="margin-top: 5px;">Puesto 1</p>
+    </div>
 
+    <div class="toggleWrapper temp-manual-btn">
+        <input type="checkbox" id="temp-dnGeneral2" class="dnGeneral" data-puesto="manual2" >
+        <label for="temp-dnGeneral2" class="toggle"><span class="toggle__handler"></span></label>
+        <p style="margin-top: 5px;">Puesto 2</p>
+    </div>
+
+    <div class="toggleWrapper temp-manual-btn">
+        <input type="checkbox" id="temp-dnGeneral3" class="dnGeneral" data-puesto="manual3" >
+        <label for="temp-dnGeneral3" class="toggle"><span class="toggle__handler"></span></label>
+        <p style="margin-top: 5px;">Puesto 3</p>
+    </div>
+
+    <div class="toggleWrapper temp-manual-btn">
+        <input type="checkbox" id="temp-dnGeneral4" class="dnGeneral" data-puesto="manual4" >
+        <label for="temp-dnGeneral4" class="toggle"><span class="toggle__handler"></span></label>
+        <p style="margin-top: 5px;">Puesto 4</p>
+    </div>
+</div>
             <h3>Selecciona los días:</h3>
             <button class="dia-btn" data-dia="0">Domingo</button>
             <button class="dia-btn" data-dia="1">Lunes</button>
@@ -454,9 +480,16 @@ const PuestoController = {
             boton.addEventListener('click', this.handlePuestoClick);
         });
 
-        document.querySelectorAll('.manual-btn').forEach(boton => {
+        document.querySelectorAll('#Bogota .manual-btn').forEach(boton => {
             boton.addEventListener('click', this.manualPuestoClick);
         });
+
+        document.querySelectorAll('#Paris .temp-manual-btn').forEach(boton => { // todo sigue duplicando el evento click-->
+    if (!boton.dataset.eventRegistered) { // Verifica si ya tiene el evento registrado
+        boton.addEventListener('click', PuestoController.tempManualPuestoClick);
+        boton.dataset.eventRegistered = true; // Marca el botón como registrado
+    }
+});
         
         EventBus.subscribe('puestosActualizados', this.actualizarVistaSeleccion);
         EventBus.subscribe('horariosActualizados', this.actualizarVisualizacion);
@@ -465,6 +498,31 @@ const PuestoController = {
         EventBus.subscribe('manualActualizados', this.actualizarVisualManualLedCheckbox);
         EventBus.subscribe('memoriaHorariosActualizados', this.actualizarVisualizacion);
         //
+    },
+
+    tempManualPuestoClick: function(event) {
+        const puesto = event.target.dataset.puesto;
+        
+console.log(`####control manual temporizado puesto ${puesto}`);
+//console.log(`estado de los puestos ${JSON.stringify(HorarioModel.controlManual)}`);
+if (HorarioModel.estadoManual.has(puesto)) { //diferenciar de estado manual de control manual
+            HorarioModel.desactivarControlManual(puesto);
+        } else {
+            HorarioModel.activarControlManual(puesto);
+        }
+        EventBus.publish('manualPuestoActualizado', HorarioModel.controlManual);
+setTimeout(() => {
+        console.log(`Ejecutando acción para el puesto ${puesto} después de 1 minuto.`);
+        // Aquí puedes agregar el código que deseas ejecutar
+        if (HorarioModel.estadoManual.has(puesto)) { //diferenciar de estado manual de control manual
+            HorarioModel.desactivarControlManual(puesto);
+        } else {
+            HorarioModel.activarControlManual(puesto);
+        }
+        EventBus.publish('manualPuestoActualizado', HorarioModel.controlManual);
+    }, 60000); // 60,000 milisegundos = 1 minuto
+
+
     },
 
     manualPuestoClick: function(event) {
@@ -598,8 +656,12 @@ const DiaController = {
 
 const HorarioController = {
     init: function() {
+        try{
         document.getElementById('guardarHorario').addEventListener('click', this.handleGuardarClick);
-        
+        }
+        catch(e){
+            console.log("Error al inicializar el controlador de horarios:", e);
+        }
         // EventBus.subscribe('horariosActualizados', function(data) {
         //     console.log("JSON actualizado:", data);
         // });
