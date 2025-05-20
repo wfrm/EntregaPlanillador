@@ -186,6 +186,7 @@
       </script>
     <script>
        // Patrón Observer: Sistema de eventos
+       const BASE_URL = 'http://192.168.1.111';
 const EventBus = {
     events: {},
     
@@ -816,9 +817,9 @@ for (let key in HorarioModel.periodosPreconfigurados) {
 // Corrected SyncController with fixed keep-alive functionality
 const SyncController = {
     apiUrlPOST: 'https://tu-api-endpoint.com/horarios', // Reemplaza con la URL real de tu API
-    apiUrlWS: 'http://192.168.1.111:81', 
+    apiUrlWS: `${BASE_URL}:81`, 
     ws: null,
-    apiUrlLeerConfig: 'http://192.168.1.111/leerConfig',
+    apiUrlLeerConfig: `${BASE_URL}/leerConfig`,
     keepAliveTimeout: null, // Temporizador para el keep-alive
     keepAliveInterval: 5000, // Intervalo de tiempo para validar el keep-alive (5 segundos)
     esJSONValido:function(cadena) {
@@ -845,7 +846,7 @@ const objetoActualizado = Object.fromEntries(
 },
 
 leerArchivoConfigRapida: function() {
-    const url = 'http://192.168.1.111/leerArchivo?archivo=config-rapida';
+    const url = `${BASE_URL}/leerArchivo?archivo=config-rapida`;
 
     fetch(url, {
         method: 'GET'
