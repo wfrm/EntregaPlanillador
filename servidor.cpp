@@ -33,7 +33,8 @@ void handleRoot() {
   if (isAccessingViaAP) {
     // Si accede a través del AP, mostrar página con información de conexión
     String html = "<html><head>";
-    html += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+    html += "<html lang='es'>";
+    html += "<meta name='viewport' content='width=device-width, initial-scale=1.0' charset='UTF-8'>";
     html += "<title>ESP8266 - Información de Red</title>";
     html += "<style>";
     html += "body { font-family: Arial, sans-serif; margin: 0; padding: 20px; text-align: center; }";
