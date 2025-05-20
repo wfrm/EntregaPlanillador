@@ -24,7 +24,61 @@ ESP8266WebServer server(80);
 DNSServer dnsServer;
 
 void handleRoot() {
-  server.send(200, "text/plain", "hello from esp8266!");
+  // Obtener la IP del cliente que está haciendo la solicitud
+  IPAddress clientIP = server.client().remoteIP();
+  
+  // Comprobar si el cliente está accediendo a través del AP (192.168.4.x)
+  bool isAccessingViaAP = (clientIP[0] == 192 && clientIP[1] == 168 && clientIP[2] == 4);
+  
+  if (isAccessingViaAP) {
+    // Si accede a través del AP, mostrar página con información de conexión
+    String html = "<html><head>";
+    html += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+    html += "<title>ESP8266 - Información de Red</title>";
+    html += "<style>";
+    html += "body { font-family: Arial, sans-serif; margin: 0; padding: 20px; text-align: center; }";
+    html += ".info-box { background-color: #f0f0f0; border-radius: 10px; padding: 20px; margin: 20px auto; max-width: 600px; }";
+    html += "h1 { color: #0066cc; }";
+    html += "table { width: 100%; border-collapse: collapse; margin: 20px 0; }";
+    html += "th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }";
+    html += "th { background-color: #0066cc; color: white; }";
+    html += ".btn { background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px; }";
+    html += "</style>";
+    html += "</head><body>";
+    html += "<div class='info-box'>";
+    html += "<h1>Información de Conexión ESP8266</h1>";
+    html += "<table>";
+    html += "<tr><th>Parámetro</th><th>Valor</th></tr>";
+    
+    // Información del AP
+    html += "<tr><td>Modo AP SSID</td><td>" + String(ssid) + "</td></tr>";
+    html += "<tr><td>IP del AP</td><td>" + WiFi.softAPIP().toString() + "</td></tr>";
+    
+    // Información del modo estación (si está conectado)
+    if (WiFi.status() == WL_CONNECTED) {
+      html += "<tr><td>Conectado a WiFi</td><td>" + WiFi.SSID() + "</td></tr>";
+      html += "<tr><td>IP modo Estación</td><td><strong>" + WiFi.localIP().toString() + "</strong></td></tr>";
+      html += "<tr><td>Máscara de subred</td><td>" + WiFi.subnetMask().toString() + "</td></tr>";
+      html += "<tr><td>Puerta de enlace</td><td>" + WiFi.gatewayIP().toString() + "</td></tr>";
+    } else {
+      html += "<tr><td>Estado WiFi</td><td>Desconectado</td></tr>";
+    }
+    
+    html += "</table>";
+    
+    // Si está conectado al WiFi, agregar un botón para ir a la interfaz principal
+    if (WiFi.status() == WL_CONNECTED) {
+      html += "<p>Para acceder a la interfaz principal, use la dirección IP del modo Estación:</p>";
+      html += "<a class='btn' href='http://" + WiFi.localIP().toString() + "'>Ir a la interfaz principal</a>";
+    }
+    
+    html += "</div></body></html>";
+    
+    server.send(200, "text/html", html);
+  } else {
+    // Para otras solicitudes, servir el archivo index.html normal
+    serveIndexFile();
+  }
 }
 
 void handleNotFound() {
@@ -157,7 +211,7 @@ void conectar() {
 }
 
 void init_servidor() {
-  server.on("/", serveIndexFile);
+  server.on("/", handleRoot);
   server.on("/saveconfig-rapida", jsonconfigRapida);
   server.on("/leerConfig", leerConfiguracion);
   server.on("/leerArchivo", GetArchivoJson);
