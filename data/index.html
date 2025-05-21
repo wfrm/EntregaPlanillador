@@ -166,7 +166,7 @@
             <div id="day-schedule"></div>
         </div>
       </div>
-
+      <div id="notificaciones"></div>
     <script src="index.js"></script>
     <script>
         (function ($) {
@@ -217,6 +217,40 @@ const EventBus = {
         });
     }
 };
+// Sujeto (Subject)
+class NotificacionSubject {
+  constructor() {
+    this.observers = [];
+  }
+
+  subscribe(observer) {
+    this.observers.push(observer);
+  }
+
+  notify(data) {
+    this.observers.forEach(observer => observer.update(data));
+  }
+}
+
+// Observador (Observer)
+class NotificacionObserver {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+  }
+
+  update(mensaje) {
+    const div = document.createElement('div');
+    div.className = 'notificacion';
+    div.textContent = mensaje;
+    this.container.appendChild(div);
+
+    // Eliminar después de 5 segundos
+    setTimeout(() => {
+      this.container.removeChild(div);
+    }, 5000);
+  }
+}
+
 
 // Modelo de datos central
 const HorarioModel = {
@@ -438,9 +472,9 @@ const SyncStatusView = {
         EventBus.subscribe('horariosActualizados', this.mostrarSincronizando);
 
         EventBus.subscribe('estadoConexion', function(data) {
-        SyncStatusView.mostrarEstadoConexion(data.mensaje, data.estado);
-        
-});
+        //this.mostrarEstadoConexion(data.mensaje, data.estado);//todo: acalarar porque es SyncStatusView
+        });
+
     },
     
     mostrarSincronizando: function() {
@@ -450,7 +484,9 @@ const SyncStatusView = {
             statusElement.className = 'sync-status syncing';
             // Ocultar después de un tiempo
             setTimeout(() => {
-                statusElement.style.opacity = '0';
+             statusElement.style.opacity = '0';
+            statusElement.textContent = "";
+            statusElement.className = "";
             }, 3000);
         }
     },
@@ -462,7 +498,9 @@ const SyncStatusView = {
             statusElement.className = 'sync-status success';
             // Ocultar después de un tiempo
             setTimeout(() => {
-                statusElement.style.opacity = '0';
+            statusElement.style.opacity = '0';
+            statusElement.textContent = "";
+            statusElement.className = "";
             }, 3000);
         }
     },
@@ -472,6 +510,11 @@ const SyncStatusView = {
         if (statusElement) {
             statusElement.textContent = 'Error: ' + error;
             statusElement.className = 'sync-status error';
+            setTimeout(() => {
+            statusElement.style.opacity = '0';
+            statusElement.textContent = "";
+            statusElement.className = "";
+        }, 3000);
             // No ocultar automáticamente en caso de error para que el usuario lo vea
         }
     },
@@ -481,8 +524,13 @@ const SyncStatusView = {
             statusElement.textContent = mensaje;
             statusElement.className = `sync-status ${estado}`;
             statusElement.style.opacity = '1';
+            setTimeout(() => {
+            statusElement.style.opacity = '0';
+            statusElement.textContent = "";
+            statusElement.className = "";
+        }, 3000);
         }
-    }
+    },
 };
 
 // Controladores para la UI
@@ -900,7 +948,7 @@ enviarPeriodosPreconfigurados:function () {
     const queryParams =  'configuracion='+JSON.stringify(this.preparar(HorarioModel.periodosPreconfigurados) );
    
     // Realizar la solicitud POST al endpoint /saveconfig-rapida
-    fetch(`http:${BASE_URL}/saveconfig-rapida?${queryParams}`, {
+    fetch(`${BASE_URL}/saveconfig-rapida?${queryParams}`, {
         method: 'GET',
         /*headers: {
             'Content-Type': 'application/json'
@@ -1050,7 +1098,9 @@ procesarDatosSegundosEnHoras:function(datos){
     handleWebSocketMessage: function(event) {
         console.log("Respuesta del servidor:", event.data);
         this.reiniciarKeepAlive(); // Reinicia el temporizador cuando se recibe un mensaje
-        
+        if(event.data.includes("estados")){}
+        else
+        subject.notify(event.data);
         try {
             const data = JSON.parse(event.data);
             EventBus.publish('sincronizacionExitosa', data);
@@ -1206,6 +1256,14 @@ document.addEventListener('DOMContentLoaded', function() {
     DiaController.init();
     HorarioController.init();
     PeriodoController.init();
+// Crear instancia del sujeto
+const subject = new NotificacionSubject();
+window.subject = subject; // Hacerlo global
+
+// Crear y registrar observadores
+const observer1 = new NotificacionObserver('notificaciones');
+window.observer1 = observer1; // Hacerlo global
+subject.subscribe(observer1);
 
 });
     </script>
