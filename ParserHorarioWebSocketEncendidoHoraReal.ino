@@ -79,16 +79,17 @@ void loop() {
   horaEnSegundos = getSecondsFromFormattedTime();
 
   if (!horariosJSON.isEmpty()) {
-    delay(1000); // Da tiempo al we bsoket de responder TODO: buscar la forma que responda despues de revizar el json
-    USE_SERIAL.printf("hora actual: %s \n", hora);
     int dia = obtenerDia();
+    delay(1000); // Da tiempo al we bsoket de responder TODO: buscar la forma que responda despues de revizar el json
+    USE_SERIAL.printf("hora actual: %s del dia %d \n", hora, dia);
+    
     horariosJSON = "";
   }
   else {
     if (millis() - tempo > 1000) {
       //procesarHorarios(horaEnSegundos); // Procesa los horarios y actualiza el LED
       if (selector == 1)
-        procesarHorarios4Puestos(horaEnSegundos);
+        procesarHorarios4PuestosGrupoRangos(horaEnSegundos);
       if (selector == 2)
         procesarManual4Puestos();
         //Serial.printf("selector %d\n",selector);

@@ -19,6 +19,13 @@
 .schedule-rows td[data-selecting] { background-color: #E74C3C; }
 
 .schedule-rows td[data-disabled] { opacity: 0.55; }
+
+thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f4f4f4;
+  z-index: 10;
+}
 /*
 table {
   width: 50%;
@@ -65,3 +72,56 @@ input {
   background-color: #fff3cd;
   color: #856404;
 }
+
+.sync-status.info {
+  background-color: #fff3cd;
+  color: #1d2e7e;
+}
+    #notificaciones {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      max-width: 300px;
+    }
+    .notificacion {
+      background: #444;
+      color: white;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      animation: fadeOut 5s forwards;
+    }
+    @keyframes fadeOut {
+      0% {opacity: 1;}
+      80% {opacity: 1;}
+      100% {opacity: 0; transform: translateY(-20px);}
+    }
+
+.tabs {
+      display: flex;
+      margin-bottom: 1rem;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      background: #eee;
+      border: 1px solid #ccc;
+      border-bottom: none;
+      margin-right: 5px;
+    }
+
+    .tab.active {
+      background: #fff;
+      font-weight: bold;
+    }
+
+    .tab-content {
+      border: 1px solid #ccc;
+      padding: 20px;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }

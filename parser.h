@@ -12,6 +12,7 @@ extern int myPins[];
 void processSchedule(const char* jsonString);
 String convertirAFormatoR(String contenido);
 void procesarHorarios(unsigned long horaEnSegundos);
+void procesarHorarios4PuestosGrupoRangos(unsigned long horaEnSegundos);
 void procesarHorarios4Puestos(unsigned long horaEnSegundos);
 void procesarHorarios4Puestos_old(unsigned long horaEnSegundos);
 String procesarConfigRapida(String payloadMemoria);

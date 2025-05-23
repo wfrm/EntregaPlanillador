@@ -8,8 +8,8 @@ String horariosJSON = "";      // Variable para guardar los horarios recibidos
 int myPins[] = {16, 14, 12, 13, 15, 2, 0, 4, 5, 10};
 int myEstadoPins[] = {LOW, LOW, LOW, LOW, LOW, LOW, LOW, LOW, LOW, LOW};
 int indice = 0;
-int pin=0;
-int estadoPin=false;
+int pin = 0;
+int estadoPin = false;
 DynamicJsonDocument doc(2048); // Documento JSON para almacenar los horarios
 
 void processSchedule(const char* jsonString) {
@@ -44,8 +44,8 @@ String convertirAFormatoR(String contenido) {
 void procesarHorarios4Puestos(unsigned long horaEnSegundos) {
   // Verifica si el LED debe estar encendido o apagado
   bool encender = false;
-  bool validacion=false;
-
+  bool validacion = false;
+  bool encenderPuestoActual = false;
   String payloadMemoria = leerArchivo();
   //webSocket.sendTXT(0, payloadMemoria);
 
@@ -60,25 +60,25 @@ void procesarHorarios4Puestos(unsigned long horaEnSegundos) {
 
       //Serial.printf("Procesando %s\n", nombrePuesto);
 
-if (strstr(nombrePuesto, "puesto1") != nullptr) {
-    //Serial.println("'puesto1' está dentro de nombrePuesto");
-    indice=0;
-}
-else if (strstr(nombrePuesto, "puesto2") != nullptr) {
-    //Serial.println("'puesto1' está dentro de nombrePuesto");
-    indice=1;
-}
-else if (strstr(nombrePuesto, "puesto3") != nullptr) {
-    //Serial.println("'puesto1' está dentro de nombrePuesto");
-    indice=2;
-}
-else if (strstr(nombrePuesto, "puesto4") != nullptr) {
-    //Serial.println("'puesto1' está dentro de nombrePuesto");
-    indice=3;
-}
-else{
-  indice=-1;
-}
+      if (strstr(nombrePuesto, "puesto1") != nullptr) {
+        //Serial.println("'puesto1' está dentro de nombrePuesto");
+        indice = 0;
+      }
+      else if (strstr(nombrePuesto, "puesto2") != nullptr) {
+        //Serial.println("'puesto1' está dentro de nombrePuesto");
+        indice = 1;
+      }
+      else if (strstr(nombrePuesto, "puesto3") != nullptr) {
+        //Serial.println("'puesto1' está dentro de nombrePuesto");
+        indice = 2;
+      }
+      else if (strstr(nombrePuesto, "puesto4") != nullptr) {
+        //Serial.println("'puesto1' está dentro de nombrePuesto");
+        indice = 3;
+      }
+      else {
+        indice = -1;
+      }
 
       // Iterar a través de los días (0, 1, 2, ..., 6)
       for (JsonPair dia : dias) {
@@ -86,27 +86,21 @@ else{
         JsonArray rangos = dia.value().as<JsonArray>(); // Obtener el array de rangos de tiempo
 
         // Iterar a través de los rangos de horas para el día actual
-        for (JsonArray range : rangos) {
-          unsigned long start = range[0];
-          unsigned long end = range[1];
-          String Hinicio = getFormattedTimeFromSeconds(start);
-          String Hfin = getFormattedTimeFromSeconds(end);
-          
+        for (JsonArray groupOfRanges : rangos) {
+          for (JsonArray range : groupOfRanges) {
+            unsigned long start = range[0];
+            unsigned long end = range[1];
+            String Hinicio = getFormattedTimeFromSeconds(start);
+            String Hfin = getFormattedTimeFromSeconds(end);
 
-          // Comprueba si la hora actual está dentro del rango
-          validacion=horaEnSegundos >= start && horaEnSegundos <= end;
-          Serial.printf(" indice %d puesto %s  encendido?(%d) Día %s: horario de %s a %s\n",indice,nombrePuesto,validacion, diaClave, Hinicio, Hfin);
-          if (validacion) {
-            encender = true;
-            if (indice!=-1)
-            myEstadoPins[indice]=encender;
-            break; // Sale del ciclo si el rango de tiempo coincide
-          }
-          else{
-            if (indice!=-1)
-            myEstadoPins[indice]=false;
+
+            // Comprueba si la hora actual está dentro del rango
+            if (horaEnSegundos >= start && horaEnSegundos <= end) {
+              encenderPuestoActual = true; // ¡Coincidencia encontrada para este puesto!
+              break; // Salir del bucle más interno (rangos individuales)
             }
-         
+            Serial.printf(" indice %d puesto %s  encendido?(%d) Día %s: horario de %s a %s\n", indice, nombrePuesto, validacion, diaClave, Hinicio, Hfin);
+          }
         }
 
         // Si ya se determinó que se debe encender, no es necesario seguir con el resto de los días
@@ -123,46 +117,137 @@ else{
   } else {
     Serial.println(" [ 4 puestos ]Error al deserializar el JSON");
   }
-  
-for (int g=0;g<4;g++){
-  pin=myPins[g];
-  estadoPin=myEstadoPins[g];
-  digitalWrite(pin, estadoPin); // Encender el LED
-  Serial.printf("pin %d estado %d\n",pin,estadoPin);
-}
+
+  for (int g = 0; g < 4; g++) {
+    pin = myPins[g];
+    estadoPin = myEstadoPins[g];
+    digitalWrite(pin, estadoPin); // Encender el LED
+    Serial.printf("pin %d estado %d\n", pin, estadoPin);
+  }
 
   // Aquí puedes agregar la lógica para encender o apagar el LED según `encender`
-//  if (encender) {
-//    Serial.println("Encendiendo el LED");
-//    
-//    digitalWrite(pin, HIGH); // Encender el LED
-//  } else {
-//    Serial.println("Apagando el LED");
-//    digitalWrite(pin, LOW); // Apagar el LED
-//  }
+  //  if (encender) {
+  //    Serial.println("Encendiendo el LED");
+  //
+  //    digitalWrite(pin, HIGH); // Encender el LED
+  //  } else {
+  //    Serial.println("Apagando el LED");
+  //    digitalWrite(pin, LOW); // Apagar el LED
+  //  }
 
   ////////////////////////////////
   // Actualiza el estado del LED
   //digitalWrite(LED_PIN, encender ? HIGH : LOW);
-  String salidas="";
-  for(int z=0;z<4;z++){
-    if(myEstadoPins[z]){
-      salidas=salidas+"1";
-      }
-      else{
-        salidas=salidas+"0";
-        }
+  String salidas = "";
+  for (int z = 0; z < 4; z++) {
+    if (myEstadoPins[z]) {
+      salidas = salidas + "1";
+    }
+    else {
+      salidas = salidas + "0";
+    }
   }
-  Serial.printf("estado de pines %s \n",salidas);
+  Serial.printf("estado de pines %s \n", salidas);
   String led_state16 = digitalRead(16) ? "manual1" : "OFF";
   String led_state14 = digitalRead(14) ? "manual2" : "OFF";
   String led_state12 = digitalRead(12) ? "manual3" : "OFF";
   String led_state13 = digitalRead(13) ? "manual4" : "OFF";
-  String led_state= "estados,"+led_state16+","+led_state14+","+led_state12+","+led_state13;
+  String led_state = "estados," + led_state16 + "," + led_state14 + "," + led_state12 + "," + led_state13;
   webSocket.sendTXT(0, led_state);
 }
 
- void procesarManual4Puestos() {
+
+void procesarHorarios4PuestosGrupoRangos(unsigned long horaEnSegundos) {
+  bool validacion = false;
+  bool encender = false;
+  int hoyEs = obtenerDia();
+  String payloadMemoria = leerArchivo();
+  DeserializationError error = deserializeJson(doc, payloadMemoria);
+  if (!error) {
+    for (JsonPair puesto : doc.as<JsonObject>()) {
+      validacion = false;
+      encender = false;
+      const char* nombrePuesto = puesto.key().c_str();
+      JsonObject dias = puesto.value().as<JsonObject>();
+      if (strstr(nombrePuesto, "puesto1") != nullptr) {
+        //Serial.println("'puesto1' está dentro de nombrePuesto");
+        indice = 0;
+      }
+      else if (strstr(nombrePuesto, "puesto2") != nullptr) {
+        //Serial.println("'puesto1' está dentro de nombrePuesto");
+        indice = 1;
+      }
+      else if (strstr(nombrePuesto, "puesto3") != nullptr) {
+        //Serial.println("'puesto1' está dentro de nombrePuesto");
+        indice = 2;
+      }
+      else if (strstr(nombrePuesto, "puesto4") != nullptr) {
+        //Serial.println("'puesto1' está dentro de nombrePuesto");
+        indice = 3;
+      }
+      else {
+        indice = -1;
+      }
+      for (JsonPair dia : dias) {
+        const char* diaClave = dia.key().c_str();
+        JsonArray rangos = dia.value().as<JsonArray>();
+        for (JsonArray rango : rangos) {
+          unsigned long inicio = rango[0];
+          unsigned long fin = rango[1];
+          validacion = horaEnSegundos >= inicio && horaEnSegundos <= fin && hoyEs == atoi(diaClave);
+          Serial.printf("Puesto: %s, Día: %s, Rango: [%lu, %lu], encender:%d en el dia %d \n", nombrePuesto, diaClave, inicio, fin, validacion, hoyEs);
+          if (validacion) {
+            break;
+          }
+        }//fun rangos
+        if (validacion) {
+          break;
+        }
+      }// fin de dias
+      if (validacion) {
+        encender = true;
+        if (indice != -1)
+          myEstadoPins[indice] = encender;
+        // break; // Sale del ciclo si el rango de tiempo coincide
+      }
+      else {
+        if (indice != -1)
+          myEstadoPins[indice] = false;
+      }
+      if (validacion) {
+        //break;
+      }
+    }// fin de puestos
+
+  } else {
+    Serial.println("Error al deserializar el JSON");
+  }
+  for (int g = 0; g < 4; g++) {
+    pin = myPins[g];
+    estadoPin = myEstadoPins[g];
+    digitalWrite(pin, estadoPin); // Encender el LED
+    Serial.printf("pin %d estado %d\n", pin, estadoPin);
+  }
+  String salidas = "";
+  for (int z = 0; z < 4; z++) {
+    if (myEstadoPins[z]) {
+      salidas = salidas + "1";
+    }
+    else {
+      salidas = salidas + "0";
+    }
+  }
+  Serial.printf("estado de pines %s \n", salidas);
+  String led_state16 = digitalRead(16) ? "manual1" : "OFF";
+  String led_state14 = digitalRead(14) ? "manual2" : "OFF";
+  String led_state12 = digitalRead(12) ? "manual3" : "OFF";
+  String led_state13 = digitalRead(13) ? "manual4" : "OFF";
+  String led_state = "estados," + led_state16 + "," + led_state14 + "," + led_state12 + "," + led_state13;
+
+  webSocket.sendTXT(0, led_state);
+}
+
+void procesarManual4Puestos() {
   // Verifica si el LED debe estar encendido o apagado
   bool encender = false;
 
@@ -306,7 +391,7 @@ void procesarHorarios(unsigned long horaEnSegundos) { // TODO: enviar codigo al 
     //////////////////////////////////
     for (int i = 0; i <= 0; i++) {// ahora es el numero de tomas
       // Accede al arreglo correspondiente para cada puesto de la toma elctrica
-      JsonArray day = doc[String(obtenerDia())];
+      JsonArray day = doc[String(obtenerDia())];// filtro de dia
 
       // Itera a través de los rangos de horas para el día actual
       for (JsonArray range : day) {
