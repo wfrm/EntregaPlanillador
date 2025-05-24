@@ -138,6 +138,7 @@
     </div>
 </div>
             <h3>Selecciona los días:</h3>
+            <div class="diasPreselecionados">
             <button class="dia-btn" data-dia="0">Domingo</button>
             <button class="dia-btn" data-dia="1">Lunes</button>
             <button class="dia-btn" data-dia="2">Martes</button>
@@ -145,6 +146,9 @@
             <button class="dia-btn" data-dia="4">Jueves</button>
             <button class="dia-btn" data-dia="5">Viernes</button>
             <button class="dia-btn" data-dia="6">Sábado</button>
+            <button class="dia-btn-guardar" id="dia-btn-guardar" >Guardar</button>
+            </div>
+
 
 
             <h2>Editar Horarios</h2>
@@ -189,7 +193,7 @@
         <div id="day-schedule"></div>
 
         </div>
-      </div>
+      </div> 
       <div id="notificaciones"></div>
     <script src="index.js"></script>
     <script>
@@ -217,6 +221,19 @@
 
         })($);
       </script>
+<script>
+           if (
+    location.hostname.includes("127.0.0.1") || 
+    location.hostname.includes("localhost")
+  ) {
+    // Estamos accediendo desde entorno local
+    window.BASE_URL = "http://192.168.1.111";
+  } else {
+    // Estamos accediendo al ESP8266 directamente
+    window.BASE_URL = "http://" + location.host ;
+  }
+</script>
+<script src="sync-controller.js"></script>
 <script src="main.js"></script>
 <script><!-- codigo para los tab -->
     function openCity(evt, cityName) {
