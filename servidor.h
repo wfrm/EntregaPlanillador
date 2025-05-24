@@ -18,4 +18,6 @@ void saludar();
 bool leerConfiguracion();
 bool jsonconfigRapida();
 void GetArchivoJson();
+bool jsonDiasPreconfigurados();
 #endif
+

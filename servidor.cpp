@@ -214,8 +214,10 @@ void conectar() {
 void init_servidor() {
   server.on("/", handleRoot);
   server.on("/saveconfig-rapida", jsonconfigRapida);
+  server.on("/saveDiasPreConfigurados", jsonDiasPreconfigurados);
+  
   server.on("/leerConfig", leerConfiguracion);
-  server.on("/leerArchivo", GetArchivoJson);
+  server.on("/leerArchivo", GetArchivoJson);// se pureba http://192.168.1.111/leerArchivo?archivo=dias-preconfigurados
   server.on("/saludo", saludar);
   server.onNotFound(handleWebRequests); //Set setver all paths are not found so we can handle as per URI
   server.begin();
@@ -290,7 +292,7 @@ bool leerConfiguracion()
 }
 /*
  forma de probar:
-   http://192.168.1.49/saveconfig-rapida?archivo=config-rapida
+   http://192.168.1.111/saveconfig-rapida?archivo=config-rapida
 */
 void GetArchivoJson()
 {
@@ -316,3 +318,17 @@ bool jsonconfigRapida()// guardar la configuracion rapida en la memoria flash
   server.send(200, "text/plane", resultado);
   return true;
 }
+/*
+   forma de probar:
+   http://192.168.1.111/saveDiasPreConfigurados?diasPreconfigurados={"Ordinario":[1,2,3,4,5],"FinSemana":[0,6],"todoTiempo":[0,1,2,3,4,5,6],"Dia":[1,2,3,4,5],"Noche":[1,2,3,4,5]}
+
+   
+*/
+bool jsonDiasPreconfigurados(){
+  Serial.println("guardando dias preconfigurados");
+  String mm = server.arg("diasPreconfigurados");
+  guardarJson(mm, "dias-preconfigurados");
+    server.send(200, "text/plane", mm);
+  return true;
+  
+  }

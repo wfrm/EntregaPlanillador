@@ -125,3 +125,12 @@ input {
     .tab-content.active {
       display: block;
     }
+
+  .diasPreselecionados {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #fff; /* O el color de fondo de tu página */
+  padding: 10px 0;
+}
+

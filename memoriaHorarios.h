@@ -9,7 +9,7 @@ void init_SPIFFS();
 String leerArchivo();
 String leerManual();
 void guardarJson(String jsonConfig,String archivo);
-String leerArchivoJson(String arcivo);
+String leerArchivoJson(String archivo);
 
 
 #endif
