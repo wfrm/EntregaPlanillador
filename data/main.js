@@ -652,7 +652,7 @@ for (let key in HorarioModel.periodosPreconfigurados) {
             //TODO: este codigo se repite todo: refactorizar
             row.innerHTML = `
                 <td> <button class="puesto-button" 
-onclick="PeriodoController.handleButtonClick(this, '${key}')">
+onclick="PeriodoController.guardarPeriodosPreconfigurados(this, '${key}')">
                     <img src=${periodo.icono} alt="Icono" style="width: 72px; height: 72px;">
                         <span class="button-text"></span>
                      </button>
@@ -663,7 +663,7 @@ onclick="PeriodoController.handleButtonClick(this, '${key}')">
             `;
             tbody.appendChild(row);
         }
-    },
+    }, 
     
     actualizarTabla: function(data) {
         const tbody = document.querySelector("#data-table tbody");
