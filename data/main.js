@@ -141,6 +141,7 @@ const HorarioModel = {
     seleccionarDiasOrdinarios: function() {
         this.limpiarDias();
 HorarioModel.diasPreselecionados.Ordinario.forEach(dia => {
+    this.limpiarDias();
     this.agregarDia(dia.toString());
 });
     },
@@ -729,12 +730,18 @@ onclick="PeriodoController.guardarPeriodosPreconfigurados(this, '${key}')">
         $("#day-schedule").data('artsy.dayScheduleSelector').clearAll();
         
         // Gestionar la selección automática de días según el periodo
-        if (periodo === "Ordinario") {
+    if (periodo === "Ordinario") {
             HorarioModel.seleccionarDiasOrdinarios();
         } else if (periodo === "FinSemana") {
             HorarioModel.seleccionarFinDeSemana();
-        } else if (periodo === "todoTiempo" || periodo==="Dia" || periodo==="Noche") {
+        } else if (periodo === "todoTiempo") {
             HorarioModel.seleccionarTodaLaSemana();
+        }
+        else if (periodo==="Dia") {
+            HorarioModel.seleccionarDiasDia();
+        }
+        else if (periodo==="Noche") {
+            HorarioModel.seleccionarDiasNoche();
         }
         
         if (HorarioModel.diasSeleccionados.size === 0) {
@@ -779,4 +786,4 @@ const observer1 = new NotificacionObserver('notificaciones');
 window.observer1 = observer1; // Hacerlo global
 subject.subscribe(observer1);
 
-});
+}); 
